@@ -18,6 +18,7 @@ class JsonUnionFundsSummaryPortrait(TransFlow):
         self.variables['trans_report_fullview'] = {}
         self.get_u_funds_summary_detail()
         self.bank_summary()
+        self.bank_account_summary()
         self.bank_trans_type()
         self.loan_analyse()
         self.wxzfb_summary()
@@ -109,6 +110,101 @@ class JsonUnionFundsSummaryPortrait(TransFlow):
         self.variables['trans_report_fullview']['bank_summary'] = {
             "bank_summary_trend_chart": bank_summary,
             "bank_summary_tips": bank_summary_tips
+        }
+
+    def bank_account_summary(self):
+        """
+        分账户汇总经营性收入和支出，以及分账户按月汇总经营性收入和支出
+        :return:
+        """
+        account_summary = []
+        account_monthly_summary = []
+        all_df = self.df.copy()
+        if not all_df.empty:
+            # 筛选经营性数据：剔除多头、特殊、关联关系
+            normal_df = all_df.loc[
+                pd.isna(all_df.loan_type)
+                & pd.isna(all_df.unusual_trans_type)
+                & pd.isna(all_df.relationship)
+            ]
+            if not normal_df.empty:
+                # 分别计算进账和出账
+                income_df = normal_df[normal_df.trans_amt >= 0]
+                expense_df = normal_df[normal_df.trans_amt < 0]
+
+                # ========== 1. 分账户汇总经营性收入和支出 ==========
+                income_by_account = income_df.groupby('account_id').agg(
+                    {'trans_amt': 'sum'}).rename(columns={'trans_amt': 'normal_income_amt'})
+                expense_by_account = expense_df.groupby('account_id').agg(
+                    {'trans_amt': lambda x: x.abs().sum()}).rename(columns={'trans_amt': 'normal_expense_amt'})
+                account_agg_df = income_by_account.join(expense_by_account, how='outer').fillna(0).reset_index()
+                account_agg_df['net_income_amt'] = account_agg_df['normal_income_amt'] - account_agg_df[
+                    'normal_expense_amt']
+
+                # 计算各账户收入和支出占比
+                total_income = account_agg_df['normal_income_amt'].sum()
+                total_expense = account_agg_df['normal_expense_amt'].sum()
+                account_agg_df['income_proportion'] = round(
+                    account_agg_df['normal_income_amt'] / total_income, 4) if total_income > 0 else 0
+                account_agg_df['expense_proportion'] = round(
+                    account_agg_df['normal_expense_amt'] / total_expense, 4) if total_expense > 0 else 0
+
+                # 匹配账户详情
+                account_id_list = account_agg_df['account_id'].tolist()
+                account_detail_df = self.get_trans_account_detail(account_id_list)
+                account_agg_df = account_agg_df.merge(
+                    account_detail_df[['id', 'account_name', 'bank', 'account_no']],
+                    how='left', left_on='account_id', right_on='id')
+                # 同一账户可能存在多条记录（不同file_id），需合并
+                account_agg_df = account_agg_df.groupby(
+                    ['account_name', 'bank', 'account_no'], as_index=False).agg(
+                    {'normal_income_amt': 'sum', 'normal_expense_amt': 'sum',
+                     'net_income_amt': 'sum', 'income_proportion': 'sum',
+                     'expense_proportion': 'sum'})
+                # 银行账号保留后4位
+                account_agg_df['account_no'] = account_agg_df['account_no'].astype(str).str[-4:]
+                # 金额保留2位小数
+                for col in ['normal_income_amt', 'normal_expense_amt', 'net_income_amt']:
+                    account_agg_df[col] = account_agg_df[col].apply(lambda x: round(x, 2))
+                account_agg_df.rename(columns={
+                    'account_name': 'user_name', 'bank': 'bank_name', 'account_no': 'bank_no'
+                }, inplace=True)
+                account_summary = account_agg_df[
+                    ['user_name', 'bank_name', 'bank_no', 'normal_income_amt', 'normal_expense_amt',
+                     'net_income_amt', 'income_proportion', 'expense_proportion']].to_dict('records')
+
+                # ========== 2. 分账户按月汇总经营性收入和支出 ==========
+                income_by_acct_month = income_df.groupby(['account_id', 'trans_month']).agg(
+                    {'trans_amt': 'sum'}).rename(columns={'trans_amt': 'normal_income_amt'})
+                expense_by_acct_month = expense_df.groupby(['account_id', 'trans_month']).agg(
+                    {'trans_amt': lambda x: x.abs().sum()}).rename(columns={'trans_amt': 'normal_expense_amt'})
+                monthly_df = income_by_acct_month.join(
+                    expense_by_acct_month, how='outer').fillna(0).reset_index()
+                monthly_df['net_income_amt'] = monthly_df['normal_income_amt'] - monthly_df['normal_expense_amt']
+
+                # 匹配账户详情
+                monthly_df = monthly_df.merge(
+                    account_detail_df[['id', 'account_name', 'bank', 'account_no']],
+                    how='left', left_on='account_id', right_on='id')
+                # 同一账户同月合并
+                monthly_df = monthly_df.groupby(
+                    ['account_name', 'bank', 'account_no', 'trans_month'], as_index=False).agg(
+                    {'normal_income_amt': 'sum', 'normal_expense_amt': 'sum',
+                     'net_income_amt': 'sum'})
+                monthly_df['account_no'] = monthly_df['account_no'].astype(str).str[-4:]
+                for col in ['normal_income_amt', 'normal_expense_amt', 'net_income_amt']:
+                    monthly_df[col] = monthly_df[col].apply(lambda x: round(x, 2))
+                monthly_df.sort_values(['account_name', 'bank', 'account_no', 'trans_month'], inplace=True)
+                monthly_df.rename(columns={
+                    'account_name': 'user_name', 'bank': 'bank_name', 'account_no': 'bank_no'
+                }, inplace=True)
+                account_monthly_summary = monthly_df[
+                    ['user_name', 'bank_name', 'bank_no', 'trans_month',
+                     'normal_income_amt', 'normal_expense_amt', 'net_income_amt']].to_dict('records')
+
+        self.variables['trans_report_fullview']['bank_account_summary'] = {
+            'account_summary': account_summary,
+            'account_monthly_summary': account_monthly_summary
         }
 
     @staticmethod
