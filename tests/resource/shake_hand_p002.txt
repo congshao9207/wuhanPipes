@@ -1,0 +1,14 @@
+{
+    "reqNo":"Q371373969674240000",
+    "productCode":"002",
+    "queryData":[
+        {
+            "name": "上海卫园餐饮管理有限公司",
+            "idno": "91310115088687037K",
+            "phone": "",
+            "userType": "COMPANY",
+            "authorStatus":"AUTHORIZED"
+        }
+    ],
+    "versionNo":"1.0"
+}

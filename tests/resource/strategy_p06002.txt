@@ -1,0 +1,307 @@
+{
+    "strategyParam": {
+        "appId": "077205",
+        "reqNo": "Q628212205371949056",
+        "stepReqNo": "S628212205434863616",
+        "productCode": "06002",
+        "queryData": [
+            {
+                "id": 709,
+                "parentId": 0,
+                "name": "刘燎",
+                "idno": "510502198004040736",
+                "phone": "15921664870",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PERSONAL",
+                "relation": "MAIN",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06002",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "学历",
+                    "industry": "主营⾏业",
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNMARRIED",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 1.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 710,
+                "parentId": 0,
+                "name": "李静波",
+                "idno": "211302197912141617",
+                "phone": "15921664870",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_PERSONAL",
+                "relation": "SPOUSE",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06002",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "学历",
+                    "industry": "主营⾏业",
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNMARRIED",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 2.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 711,
+                "parentId": 710,
+                "name": "敖汉旗四家子静波采砂场",
+                "idno": "92150430MA0PDNXN1F",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_LG_COMPANY",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 8.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 712,
+                "parentId": 710,
+                "name": "朝阳瑞城环保科技有限公司",
+                "idno": "912113025807020839",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_LG_COMPANY",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 8.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 713,
+                "parentId": 710,
+                "name": "上海知普信息科技有限公司",
+                "idno": "91310117688753982U",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.6,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": "主营⾏业",
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 4.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 714,
+                "parentId": 710,
+                "name": "双塔区腾吉粮油商店",
+                "idno": "92211302MA0Y1X8K8E",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_LG_COMPANY",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 8.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": null,
+                    "totalSalesLastYear": null
+                }
+            }
+        ],
+        "single": false,
+        "renewLoans": false,
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}

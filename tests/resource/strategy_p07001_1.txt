@@ -1,0 +1,29 @@
+{
+    "strategyParam":{
+        "reqNo":"Q463744206746320896",
+        "stepReqNo":"S463744206763098112",
+        "productCode":"07002",
+        "queryData":[
+            {
+                "id":29804,
+                "parentId":0,
+                "name":"谷成应",
+                "idno":"342201197006098010",
+                "phone":"13305571222",
+                "userType":"PERSONAL",
+                "relation":"MAIN",
+                "extraParam":{
+                    "houseAddress":"安徽省宿州市墉桥区蒿沟乡灰苗路2-091号",
+                    "liveAddress":"安徽省宿州市墉桥区香林丽景湾小区25栋1004室",
+                    "marryState":"MARRIED",
+                    "postalAddress":"安徽省宿州市墉桥区香林丽景湾小区25栋1004室",
+                    "spouseIdNo":"342201197604010429",
+                    "spouseName":"邵静"
+                }
+            }
+        ],
+        "preReportReqNo":"Q534431559932084224",
+        "versionNo":"1.0"
+    },
+    "strategyResult":null
+}

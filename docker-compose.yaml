@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  app:
+    image: registry.cn-shanghai.aliyuncs.com/transformer/pipes:<docker image tag>
+    environment:
+      - STRATEGY_URL=http://192.168.1.20:8091
+      - ENV=PROD
+      - DB_USER=gears_test
+      - DB_PW=bd3by68u
+      - DB_HOST=192.168.1.9
+      - DB_PORT=3360
+      - DB_NAME=gears_test
+      - EUREKA_SERVER=http://192.168.1.27:8031/eureka/
+  loadbalancer:
+    image: 'dockercloud/haproxy:latest'
+    links:
+      - app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80

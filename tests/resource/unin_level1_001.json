@@ -1,0 +1,327 @@
+{
+    "strategyParam": {
+        "appId": "0000000000",
+        "reqNo": "Q521302791399047168",
+        "stepReqNo": "S521302791428407296",
+        "productCode": "03002",
+        "queryData": [
+            {
+                "id": 55876,
+                "parentId": 0,
+                "name": "上海景康园林绿化工程有限公司",
+                "idno": "91310230758412201Y",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_COMPANY",
+                "relation": "MAIN",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "本科",
+                    "industry": null,
+                    "industryName": null,
+                    "marryState": "MARRIED",
+                    "phantomRelation": false,
+                    "priority": 0.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 55874,
+                "parentId": 0,
+                "name": "吴晓兵",
+                "idno": "341621199107094911",
+                "phone": "13816716288",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.475,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_PERSONAL",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": "A033",
+                    "industryName": null,
+                    "marryState": "MARRIED",
+                    "phantomRelation": false,
+                    "priority": 1.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 55877,
+                "parentId": 55874,
+                "name": "韩先国",
+                "idno": "342422197410202118",
+                "phone": "17717547466",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.475,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SP_PERSONAL",
+                "relation": "CONTROLLER_SPOUSE",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "本科",
+                    "industry": "A051",
+                    "industryName": null,
+                    "marryState": "MARRIED",
+                    "phantomRelation": false,
+                    "priority": 2.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 55872,
+                "parentId": 0,
+                "name": "杨本慧",
+                "idno": "510124197102080821",
+                "phone": "13755511236",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.475,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_LEGAL_PERSONAL",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "本科",
+                    "industry": null,
+                    "industryName": null,
+                    "marryState": "MARRIED",
+                    "phantomRelation": false,
+                    "priority": 4.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 55875,
+                "parentId": 0,
+                "name": "刘烈",
+                "idno": "360302197812104511",
+                "phone": "13755511236",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.475,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_LEGAL_PERSONAL",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "10001",
+                    "11001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "18001",
+                    "31001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": "本科",
+                    "industry": null,
+                    "industryName": null,
+                    "marryState": "MARRIED",
+                    "phantomRelation": false,
+                    "priority": 4.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            },
+            {
+                "id": 55884,
+                "parentId": 55874,
+                "name": "浙江金立达新材料科技股份有限公司",
+                "idno": "91330781704572437U",
+                "userType": "COMPANY",
+                "fundratio": 0.475,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": "A033",
+                    "industryName": null,
+                    "marryState": "UNKNOWN",
+                    "phantomRelation": false,
+                    "priority": 6.0,
+                    "regCapAmt": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                }
+            }
+        ],
+        "single": false,
+        "renewLoans": false,
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}

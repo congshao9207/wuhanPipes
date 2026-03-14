@@ -1,0 +1,32 @@
+{
+    "reqNo": "Q429719127117168640",
+    "stepReqNo": "S429719127440130048",
+    "productCode": "06001",
+    "queryData": [
+        {
+            "id": 11802,
+            "parentId": 0,
+            "name": "上海鑫思众餐饮有限公司",
+            "idno": "913101105964975982",
+            "userType": "COMPANY",
+            "fundratio": 0.0000,
+            "applyAmo": 3305500.0000,
+            "relation": "CONTROLLER"
+        },
+        {
+            "id": 11803,
+            "parentId": 0,
+            "name": "林小龙",
+            "idno": "350524199309083035",
+            "phone": "13123456789",
+            "userType": "PERSONAL",
+            "authorStatus": "AUTHORIZED",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "MAIN"
+        }
+    ],
+    "preBizDate": "2020-02-26 09:23:11",
+    "preReportReqNo":"PR386221093104549888",
+    "versionNo": "1.0"
+}

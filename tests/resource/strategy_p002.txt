@@ -1,0 +1,20 @@
+{
+    "strategyParam": {
+        "reqNo": "Q344619174854866677",
+        "stepReqNo": "S344619174854819846",
+        "productCode": "002",
+        "queryData": [{
+            "name": "上海卫园餐饮管理有限公司",
+            "idno": "91310115088687037K",
+            "phone": "",
+            "userType": "COMPANY",
+            "bizType": [
+                "16002",
+                "24001",
+                "f0004",
+                "f0005"
+            ]
+        }],
+        "versionNo": "1.0"
+    }
+}

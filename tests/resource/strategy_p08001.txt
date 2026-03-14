@@ -1,0 +1,200 @@
+{
+  "strategyParam": {
+    "reqNo": "Q1013436096908001280",
+    "stepReqNo": "S1013436097256128512",
+    "productCode": "08001",
+    "queryData": [
+      {
+        "id": 610,
+        "parentId": 0,
+        "name": "钱钱钱",
+        "idno": "12321421",
+        "userType": "PERSONAL",
+        "relation": "MAIN",
+        "extraParam": {
+          "accounts": [
+            {
+              "bankAccount": "6212263803016834446",
+              "bankName": "中国工商银行"
+            }
+          ],
+          "fileIds": [
+            981
+          ],
+          "fileInfo": [
+            {
+              "bankAccount": "6212263803016834446",
+              "bankName": "中国工商银行",
+              "compareResult": 0,
+              "contentId": "/data/Taia/2024_07_24/SER1013430425227526144.pdf",
+              "fileName": "0c1516de-5f0e-4bd3-8157-30d818dc6f49.pdf",
+              "fileUrl": null,
+              "ownerName": "刘建龙",
+              "uploadDate": ""
+            }
+          ],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 1
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      },
+      {
+        "id": 609,
+        "parentId": 0,
+        "name": "路人乙",
+        "idno": "444444422",
+        "userType": "PERSONAL",
+        "relation": "GUAR_PER",
+        "extraParam": {
+          "accounts": [],
+          "fileIds": [],
+          "fileInfo": [],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 2147483647
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      },
+      {
+        "id": 608,
+        "parentId": 0,
+        "name": "路人丙",
+        "idno": "33333333333",
+        "userType": "COMPANY",
+        "relation": "ENT",
+        "extraParam": {
+          "accounts": [],
+          "fileIds": [],
+          "fileInfo": [],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 2147483647
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      },
+      {
+        "id": 607,
+        "parentId": 0,
+        "name": "路人甲",
+        "idno": "222222222",
+        "userType": "PERSONAL",
+        "relation": "PER",
+        "extraParam": {
+          "accounts": [
+            {
+              "bankAccount": "6222083803002354778",
+              "bankName": "中国工商银行"
+            },
+            {
+              "bankAccount": "2201036909100172463",
+              "bankName": "中国工商银行"
+            }
+          ],
+          "fileIds": [
+            983,
+            984
+          ],
+          "fileInfo": [
+            {
+              "bankAccount": "6222083803002354778",
+              "bankName": "中国工商银行",
+              "compareResult": 0,
+              "contentId": "/data/Taia/2024_07_24/SER1013435620518952960.pdf",
+              "fileName": "5ee9d4a6-de88-49a3-b8c4-f144b5cbc73f.pdf",
+              "fileUrl": null,
+              "ownerName": "张安定",
+              "uploadDate": ""
+            },
+            {
+              "bankAccount": "2201036909100172463",
+              "bankName": "中国工商银行",
+              "compareResult": 0,
+              "contentId": "/data/Taia/2024_07_24/SER1013435654337626112.pdf",
+              "fileName": "25cbd26d-9aa9-4a8d-a136-a8ba4b3d4634.pdf",
+              "fileUrl": null,
+              "ownerName": "海南众帆钢化玻璃有限公司",
+              "uploadDate": ""
+            }
+          ],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 2147483647
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      },
+      {
+        "id": 606,
+        "parentId": 0,
+        "name": "花钱",
+        "idno": "221",
+        "userType": "PERSONAL",
+        "relation": "PER",
+        "extraParam": {
+          "accounts": [],
+          "fileIds": [],
+          "fileInfo": [
+            {
+              "bankAccount": "12321321321",
+              "bankName": "12321",
+              "compareResult": 0,
+              "contentId": "/data/Taia/2024_07_24/SER1013431255758438400.pdf",
+              "fileName": "2a191afa-8762-44aa-b6e6-c6930cfe9bab.pdf",
+              "fileUrl": null,
+              "ownerName": "烟台易捷自动化设备有限公司",
+              "uploadDate": ""
+            }
+          ],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 2147483647
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      },
+      {
+        "id": 605,
+        "parentId": 0,
+        "name": "路人丁",
+        "idno": "55555555555",
+        "userType": "COMPANY",
+        "relation": "GUAR_ENT",
+        "extraParam": {
+          "accounts": [],
+          "fileIds": [],
+          "fileInfo": [],
+          "industry": null,
+          "industryName": null,
+          "passthroughMsg": null,
+          "phantomRelation": false,
+          "priority": 2147483647
+        },
+        "authorStatus": "AUTHORIZED",
+        "fundratio": 0,
+        "applyAmo": 0
+      }
+    ],
+    "preReportReqNo": "PR1013436095410634752",
+    "versionNo": "1.0"
+  },
+  "strategyResult": null
+}

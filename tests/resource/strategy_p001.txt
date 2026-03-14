@@ -1,0 +1,40 @@
+{
+    "strategyParam": {
+        "reqNo": "Q384437085362356224",
+        "stepReqNo": "S384437085416882176",
+        "productCode": "001",
+        "queryData": [
+            {
+                "name": "沈荣林",
+                "idno": "310110195801046273",
+                "phone": "13370221339",
+                "marryState": "DIVORCE",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "baseType": "PERSONAL",
+                "bizType": [
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "07001",
+                    "09001",
+                    "10001",
+                    "11001",
+                    "12001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "17001",
+                    "18001",
+                    "f0001",
+                    "f0002",
+                    "f0003"
+                ]
+            }
+        ],
+        "versionNo": "1.0"
+    },
+    "strategyInputVariables": null
+}

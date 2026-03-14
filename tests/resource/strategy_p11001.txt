@@ -1,0 +1,1 @@
+{"strategyParam": {"reqNo": "Q2021158349269270528", "stepReqNo": "S2021158349269270529", "productCode": "11001", "versionNo": "1.0", "financeReportNo": "FTB1998201943260037120", "tableType": "PROFIT"}, "strategyResult": null}

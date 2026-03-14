@@ -1,0 +1,29 @@
+[
+    "U_PERSONAL                 >>>     userType:PERSONAL & relation:MAIN",
+    "U_PER_SP_PERSONAL          >>>     userType:PERSONAL & relation:SPOUSE",
+    "U_PER_LG_COMPANY           >>>     userType:COMPANY  & relation:LEGAL",
+    "U_PER_SH_H_COMPANY         >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.5 & ratioMax:1.0",
+    "U_PER_SP_LG_COMPANY        >>>     userType:COMPANY  & relation:LEGAL                                            >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_SP_SH_H_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.5 & ratioMax:1.0       >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_SH_M_COMPANY         >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.3 & ratioMax:0.5",
+    "U_PER_SP_SH_M_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.3 & ratioMax:0.5       >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_SH_L_COMPANY         >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.2 & ratioMax:0.3",
+    "U_PER_SP_SH_L_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.2 & ratioMax:0.3       >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_CT_COMPANY           >>>     userType:COMPANY  & relation:CONTROLLER",
+    "U_PER_SP_CT_COMPANY        >>>     userType:COMPANY  & relation:CONTROLLER                                       >>> userType:PERSONAL & relation:SPOUSE",
+
+
+    "U_COMPANY                  >>>     userType:COMPANY  & relation:MAIN",
+    "U_COM_CT_PERSONAL          >>>     userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_PERSONAL       >>>     userType:PERSONAL & relation:CONTROLLER_SPOUSE                                >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_CT_COMPANY        >>>     userType:COMPANY  & relation:CONTROLLER                                       >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_LG_COMPANY        >>>     userType:COMPANY  & relation:LEGAL                                            >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SH_H_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.5 & ratioMax:1.0       >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SH_M_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.3 & ratioMax:0.5       >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SH_L_COMPANY      >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.2 & ratioMax:0.3       >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_CT_COMPANY     >>>     userType:COMPANY  & relation:CONTROLLER                                       >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_LG_COMPANY     >>>     userType:COMPANY  & relation:LEGAL                                            >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_SH_H_COMPANY   >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.5 & ratioMax:1.0       >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_SH_M_COMPANY   >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.3 & ratioMax:0.5       >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_SH_L_COMPANY   >>>     userType:COMPANY  & relation:SHAREHOLDER & ratioMin:0.2 & ratioMax:0.3       >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER"
+]

@@ -1,0 +1,306 @@
+{
+    "strategyParam": {
+        "appId": "0000000000",
+        "reqNo": "Q737640755643973632",
+        "stepReqNo": "S737640755702693888",
+        "productCode": "03002",
+        "queryData": [
+            {
+                "id": 1537675,
+                "parentId": 0,
+                "name": "殷家焱",
+                "idno": "360403198411261213",
+                "phone": "15279209990",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PERSONAL",
+                "relation": "MAIN",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06002",
+                    "16001",
+                    "71001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001",
+                    "72001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "MARRIED",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 1.0,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            },
+            {
+                "id": 1537677,
+                "parentId": 0,
+                "name": "何跃越",
+                "idno": "360401198407200028",
+                "phone": "15070273337",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_PERSONAL",
+                "relation": "SPOUSE",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06002",
+                    "16001",
+                    "71001",
+                    "12002",
+                    "12003",
+                    "17003",
+                    "32001",
+                    "33001",
+                    "34001",
+                    "35001",
+                    "36001",
+                    "72001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 2.0,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            },
+            {
+                "id": 1537673,
+                "parentId": 0,
+                "name": "九江市川湘之恋餐饮有限公司",
+                "idno": "91360406MA35G20R0J",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 3.0,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            },
+            {
+                "id": 1537676,
+                "parentId": 0,
+                "name": "九江立帆装饰设计有限公司",
+                "idno": "91360406MA35L8CBXC",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 3.0,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            },
+            {
+                "id": 1537674,
+                "parentId": 0,
+                "name": "九江水汇天成旅游发展有限公司",
+                "idno": "91360406MA38F21H26",
+                "userType": "COMPANY",
+                "fundratio": 0.07,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_OTHER",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00000",
+                    "27001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 12.930000305175781,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "02",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            },
+            {
+                "id": 1537678,
+                "parentId": 1537677,
+                "name": "江西源泰农业科技发展有限公司",
+                "idno": "91360406MA35H1XB2F",
+                "userType": "COMPANY",
+                "fundratio": 0.4,
+                "applyAmo": 0.0,
+                "baseType": "U_PER_SP_SH_M_COMPANY",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00000",
+                    "00001",
+                    "16002",
+                    "27001"
+                ],
+                "rules": [
+
+                ],
+                "extraParam": {
+                    "accounts": [
+
+                    ],
+                    "comStrDate": null,
+                    "education": null,
+                    "industry": null,
+                    "industryName": null,
+                    "mamageAmt": null,
+                    "manageAddress": null,
+                    "marryState": "UNKNOWN",
+                    "passthroughMsg": null,
+                    "phantomRelation": false,
+                    "priority": 13.600000381469727,
+                    "regCapAmt": null,
+                    "relEntName": null,
+                    "seasonOffMonth": null,
+                    "seasonOnMonth": null,
+                    "seasonable": null,
+                    "strategy": "01",
+                    "totalSalesLastYear": null
+                },
+                "isGrt": 0
+            }
+        ],
+        "single": false,
+        "renewLoans": false,
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}

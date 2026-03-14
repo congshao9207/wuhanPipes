@@ -1,0 +1,42 @@
+{
+  "strategyParam": {
+    "productCode": "004",
+    "queryData": [
+      {
+        "baseType": "U_PERSONAL",
+        "bizType": [
+          "01001",
+          "02001",
+          "05001",
+          "05002",
+          "06001",
+          "07001",
+          "09001",
+          "10001",
+          "11001",
+          "12001",
+          "13001",
+          "14001",
+          "16001",
+          "17001",
+          "18001",
+          "31001"
+        ],
+        "fundratio": 0.0,
+        "applyAmo":22.4,
+        "id": 4789,
+        "idno": "350500199104214010",
+        "name": "张呈祥",
+        "parentId": 0,
+        "phone": "13789940389",
+        "relation": "MAIN",
+        "rules": [],
+        "userType": "PERSONAL"
+      }
+    ],
+    "reqNo": "Q394106614698901504",
+    "stepReqNo": "S394106614728261632",
+    "versionNo": "1.0"
+  },
+  "strategyResult": null
+}

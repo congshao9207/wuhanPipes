@@ -1,0 +1,202 @@
+{
+    "appId": "0000000000",
+    "reqNo": "Q629737387081236480",
+    "stepReqNo": "S629737387735547904",
+    "productCode": "06002",
+    "queryData": [
+        {
+            "id": 21784,
+            "parentId": 0,
+            "name": "刘燎",
+            "idno": "510502198004040736",
+            "phone": "15921664870",
+            "userType": "PERSONAL",
+            "authorStatus": "UNAUTHORIZED",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "MAIN",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": "学历",
+                "industry": "主营⾏业",
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNMARRIED",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 1.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        },
+        {
+            "id": 21785,
+            "parentId": 0,
+            "name": "李静波",
+            "idno": "211302197912141617",
+            "phone": "15921664870",
+            "userType": "PERSONAL",
+            "authorStatus": "UNAUTHORIZED",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "SPOUSE",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": "学历",
+                "industry": "主营⾏业",
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNMARRIED",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 2.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        },
+        {
+            "id": 21786,
+            "parentId": 21785,
+            "name": "敖汉旗四家子静波采砂场",
+            "idno": "92150430MA0PDNXN1F",
+            "userType": "COMPANY",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "LEGAL",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": null,
+                "industry": null,
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNKNOWN",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 8.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        },
+        {
+            "id": 21787,
+            "parentId": 21785,
+            "name": "朝阳瑞城环保科技有限公司",
+            "idno": "912113025807020839",
+            "userType": "COMPANY",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "LEGAL",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": null,
+                "industry": null,
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNKNOWN",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 8.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        },
+        {
+            "id": 21788,
+            "parentId": 21785,
+            "name": "上海知普信息科技有限公司",
+            "idno": "91310117688753982U",
+            "phone": "",
+            "userType": "COMPANY",
+            "fundratio": 0.6000,
+            "applyAmo": 0.0000,
+            "relation": "CONTROLLER",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": null,
+                "industry": "主营⾏业",
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNKNOWN",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 4.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        },
+        {
+            "id": 21789,
+            "parentId": 21785,
+            "name": "双塔区腾吉粮油商店",
+            "idno": "92211302MA0Y1X8K8E",
+            "userType": "COMPANY",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "LEGAL",
+            "extraParam": {
+                "accounts": [
+
+                ],
+                "comStrDate": null,
+                "education": null,
+                "industry": null,
+                "industryName": null,
+                "mamageAmt": null,
+                "manageAddress": null,
+                "marryState": "UNKNOWN",
+                "passthroughMsg": null,
+                "phantomRelation": false,
+                "priority": 8.0,
+                "regCapAmt": null,
+                "seasonOffMonth": null,
+                "seasonOnMonth": null,
+                "seasonable": null,
+                "strategy": null,
+                "totalSalesLastYear": null
+            }
+        }
+    ],
+    "single": false,
+    "renewLoans": false,
+    "versionNo": "1.0"
+}

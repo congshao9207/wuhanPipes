@@ -1,0 +1,17 @@
+{
+    "reqNo":"Q371373969674240000",
+    "productCode":"001",
+    "queryData":[
+        {
+            "name":"叶秋容",
+            "idno":"352228198705243025",
+            "phone":"18650135230",
+            "userType":"PERSONAL",
+            "authorStatus":"AUTHORIZED",
+            "extraParam": {
+                "marryState": "MARRIED"
+            }
+        }
+    ],
+    "versionNo":"1.0"
+}

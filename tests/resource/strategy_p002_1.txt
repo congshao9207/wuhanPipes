@@ -1,0 +1,29 @@
+{
+    "strategyParam":{
+        "appId":"0000000000",
+        "reqNo":"Q495536808675934208",
+        "stepReqNo":"S495536808743043072",
+        "productCode":"002",
+        "queryData":[
+            {
+                "name":"重庆道丰建材有限公司",
+                "idno":"91500109673393638J",
+                "phone":"",
+                "userType":"COMPANY",
+                "bizType":[
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules":[
+
+                ]
+            }
+        ],
+        "single":false,
+        "renewLoans":false,
+        "versionNo":"1.0"
+    }
+}

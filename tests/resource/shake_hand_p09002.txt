@@ -1,0 +1,116 @@
+{
+    "appId": "a610099231478415360",
+    "reqNo": "Q629684462237679616",
+    "stepReqNo": "S629684462279622656",
+    "productCode": "09002",
+    "queryData": [
+        {
+            "id": 138783,
+            "parentId": 0,
+            "name": "上海祥楠物流有限公司",
+            "idno": "91310116687342444K",
+            "userType": "COMPANY",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "MAIN",
+            "extraParam": {
+                "strategy": "01"
+            }
+        },
+        {
+            "id": 138784,
+            "parentId": 0,
+            "name": "申捷",
+            "idno": "14040219860405044X",
+            "phone": "18603553707",
+            "userType": "PERSONAL",
+            "authorStatus": "AUTHORIZED",
+            "fundratio": 0.0000,
+            "applyAmo": 0.0000,
+            "relation": "LEGAL",
+            "extraParam": {
+                "strategy": "01"
+            }
+        }
+    ],
+    "single": false,
+    "outApplyNo": "3829483294324528943620",
+    "renewLoans": false,
+    "extraParam": {
+        "creditLine": null,
+        "creditStageTime": null,
+        "historyOrders": [
+            {
+                "orderDateTime": "2021-10-12 11:15:23",
+                "amount": 10000,
+                "goodsDetail": "goods-0",
+                "dispatchBill": "-0",
+                "logisticsDetail": "logisticsDetail-0"
+            },
+            {
+                "orderDateTime": null,
+                "amount": 10001,
+                "goodsDetail": "goods-1",
+                "dispatchBill": "-1",
+                "logisticsDetail": "logisticsDetail-1"
+            }
+        ],
+        "personalBasicInfo": {
+            "legalName": "申捷",
+            "legalIdNo": "14040219860405044X",
+            "legalPhone": "18603553707",
+            "legalDocCert": 1,
+            "bankCardNo": "6212260505006460000",
+            "bankAddr": "中山路支行",
+            "contactAName": "李四",
+            "contactAPhone": "17750621372",
+            "contactARelation": "父子",
+            "contactBName": "王五",
+            "contactBPhone": "17750621373",
+            "contactBRelation": "父子",
+            "residentialAddress": "宜山路"
+        },
+        "registerBasicInfo": {
+            "clinicSeq": null,
+            "clinicSource": "线上",
+            "cusMgrOrg": "org1",
+            "cusReferrer": "Referrer1",
+            "clinicName": "Clinic1",
+            "chairNum": 10,
+            "clinicNo": "743387428342",
+            "optName": "operator1",
+            "optAddr": "宜山路",
+            "clinicType": "牙科",
+            "clinicDesc": "-",
+            "companyName": "company1",
+            "orgType": "OrgType1",
+            "registerDateTime": "2021-10-12 11:15:23",
+            "busLicencesNo": "91310116687342444K",
+            "busLicencesName": "上海祥楠物流有限公司",
+            "busLicencesType": null,
+            "busLicencesLegal": "fr1",
+            "busLicencesCapital": 1000000,
+            "busLicencesStartAt": null,
+            "busLicencesEndAt": null,
+            "busLicencesBusScope": null,
+            "clinicSubAccount": "7483728743827432",
+            "insLicencesOrgName": null,
+            "insLicencesAddr": "addr1",
+            "insLicencesSubjects": null,
+            "insLicencesLegal": "fr1",
+            "insLicencesHead": null,
+            "insLicencesEndAt": null,
+            "insLicencesAssignOrg": "org1"
+        },
+        "stageBasicInfo": {
+            "stageType": 1,
+            "imei": "3489237587924823",
+            "gps": "7282.13 3232.45",
+            "optDateTime": null,
+            "ip": "178.23.45.56",
+            "payAmount": null
+        },
+        "stageIndex": 1
+    },
+    "versionNo": "1.0"
+}

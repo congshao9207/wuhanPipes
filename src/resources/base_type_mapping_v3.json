@@ -1,0 +1,25 @@
+[
+    "U_PERSONAL                 >>>     userType:PERSONAL & relation:MAIN",
+    "U_PER_SP_PERSONAL          >>>     userType:PERSONAL & relation:SPOUSE",
+    "U_PER_LG_COMPANY           >>>     userType:COMPANY  & relation:LEGAL                                           >>> userType:PERSONAL & relation:MAIN",
+    "U_PER_SH_COMPANY           >>>     userType:COMPANY  & relation:SHAREHOLDER                                     >>> userType:PERSONAL & relation:MAIN",
+    "U_PER_SP_LG_COMPANY        >>>     userType:COMPANY  & relation:LEGAL                                           >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_SP_SH_COMPANY        >>>     userType:COMPANY  & relation:SHAREHOLDER                                     >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_CT_COMPANY           >>>     userType:COMPANY  & relation:CONTROLLER",
+    "U_PER_SP_CT_COMPANY        >>>     userType:COMPANY  & relation:CONTROLLER                                      >>> userType:PERSONAL & relation:SPOUSE",
+    "U_PER_PARENTS              >>>     userType:PERSONAL  & relation:PARENT",
+    "U_PER_CHILDREN             >>>     userType:PERSONAL  & relation:CHILDREN",
+    "U_PER_PARTNER              >>>     userType:PERSONAL  & relation:PARTNER",
+
+
+    "U_COMPANY                  >>>     userType:COMPANY  & relation:MAIN",
+    "U_COM_CT_PERSONAL          >>>     userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_LEGAL                >>>     userType:PERSONAL & relation:LEGAL                                           >>> userType:PERSONAL & relation:MAIN",
+    "U_COM_CT_CT_COMPANY        >>>     userType:COMPANY  & relation:CONTROLLER                                      >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_LG_COMPANY        >>>     userType:COMPANY  & relation:LEGAL                                           >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SH_COMPANY        >>>     userType:COMPANY  & relation:SHAREHOLDER                                     >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_PERSONAL       >>>     userType:PERSONAL & relation:CONTROLLER_SPOUSE                               >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_CT_COMPANY     >>>     userType:COMPANY  & relation:CONTROLLER                                      >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_LG_COMPANY     >>>     userType:COMPANY  & relation:LEGAL                                           >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER",
+    "U_COM_CT_SP_SH_COMPANY     >>>     userType:COMPANY  & relation:SHAREHOLDER                                     >>> userType:PERSONAL & relation:CONTROLLER_SPOUSE        >>> userType:PERSONAL & relation:CONTROLLER"
+]

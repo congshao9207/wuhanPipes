@@ -1,0 +1,163 @@
+{
+    "strategyParam": {
+        "appId": "0000000000",
+        "reqNo": "Q624973457280630784",
+        "stepReqNo": "S624973457809113088",
+        "productCode": "09002",
+        "queryData": [
+            {
+                "id": 138041,
+                "parentId": 0,
+                "name": "武侯区鑫蓉源建材经营部",
+                "idno": "92510107MA69EQDX64",
+                "userType": "COMPANY",
+                "fundratio": 0.0000,
+                "applyAmo": 0.0000,
+                "baseType": "U_COMPANY",
+                "relation": "MAIN",
+                "bizType": [
+                    "27001"
+                ],
+                "extraParam": {
+                    "strategy": "01"
+                },
+                "strategyInputVariables": {
+                    "base_type": "U_COMPANY",
+                    "biz_lis_end_ddl": 101,
+                    "desc": "\u5de5\u5546",
+                    "is_eme_contact_info_empty": 0,
+                    "is_phone_equal": 0,
+                    "legal_age": 0,
+                    "legal_diff": 0,
+                    "med_inst_lis_end_ddl": 101,
+                    "out_strategyBranch": "27001",
+                    "segment_name": "bus",
+                    "segment_value": "0X60",
+                    "stageIndex": 1,
+                    "strategy_branch": "union2",
+                    "tracking_policy": 1
+                },
+                "segmentName": "policy",
+                "nextSegmentName": "bus"
+            },
+            {
+                "id": 138042,
+                "parentId": 0,
+                "name": "陈林",
+                "idno": "420281199007018819",
+                "phone": "13899999999",
+                "userType": "PERSONAL",
+                "authorStatus": "AUTHORIZED",
+                "fundratio": 0.0000,
+                "applyAmo": 0.0000,
+                "baseType": "U_COM_LEGAL_PERSONAL",
+                "relation": "LEGAL",
+                "bizType": [
+                    "p0004"
+                ],
+                "extraParam": {
+                    "strategy": "01"
+                },
+                "strategyInputVariables": {
+                    "base_type": "U_COM_LEGAL_PERSONAL",
+                    "biz_lis_end_ddl": "",
+                    "desc": "\u5185\u90e8\u53cd\u6b3a\u8bc8",
+                    "is_eme_contact_info_empty": 0,
+                    "is_phone_equal": 0,
+                    "legal_age": 31,
+                    "legal_diff": 0,
+                    "med_inst_lis_end_ddl": "",
+                    "out_strategyBranch": "p0004",
+                    "segment_name": "device_fraud",
+                    "segment_value": "0X20",
+                    "stageIndex": 1,
+                    "strategy_branch": "anti_fraud",
+                    "tracking_policy": 1
+                },
+                "segmentName": "policy",
+                "nextSegmentName": "device_fraud"
+            }
+        ],
+        "single": false,
+        "outApplyNo": "3829483294324328953639",
+        "renewLoans": false,
+        "extraParam": {
+            "stageIndex": 1,
+            "creditLine": null,
+            "creditStageTime": null,
+            "registerBasicInfo": {
+                "clinicSeq": null,
+                "clinicSource": "线上",
+                "cusMgrOrg": "org1",
+                "cusReferrer": "Referrer1",
+                "clinicName": "Clinic1",
+                "chairNum": 10,
+                "clinicNo": "743387428342",
+                "optName": "operator1",
+                "optAddr": "宜山路",
+                "clinicType": "牙科",
+                "clinicDesc": "-",
+                "companyName": "company1",
+                "orgType": "OrgType1",
+                "registerDateTime": "2021-12-11 11:11:11",
+                "busLicencesNo": "92510107MA69EQDX64",
+                "busLicencesName": "武侯区鑫蓉源建材经营部",
+                "busLicencesType": "-",
+                "busLicencesLegal": "fr1",
+                "busLicencesCapital": 1000000,
+                "busLicencesStartAt": null,
+                "busLicencesEndAt": "2021-12-11 11:11:11",
+                "busLicencesBusScope": "-",
+                "clinicSubAccount": "7483728743827432",
+                "insLicencesOrgName": "-",
+                "insLicencesAddr": "addr1",
+                "insLicencesSubjects": "-",
+                "insLicencesLegal": "fr1",
+                "insLicencesHead": "-",
+                "insLicencesEndAt": "2021-12-11 11:11:11",
+                "insLicencesAssignOrg": "org1"
+            },
+            "historyOrders": [
+                {
+                    "orderDateTime": null,
+                    "amount": 10000,
+                    "goodsDetail": "goods-0",
+                    "dispatchBill": "-0",
+                    "logisticsDetail": "logisticsDetail-0"
+                },
+                {
+                    "orderDateTime": null,
+                    "amount": 10001,
+                    "goodsDetail": "goods-1",
+                    "dispatchBill": "-1",
+                    "logisticsDetail": "logisticsDetail-1"
+                }
+            ],
+            "stageBasicInfo": {
+                "stageType": 1,
+                "imei": "3489237587924823",
+                "gps": "7282.13 3232.45",
+                "optDateTime": null,
+                "ip": "178.23.45.56",
+                "payAmount": null
+            },
+            "personalBasicInfo": {
+                "legalName": "陈林",
+                "legalIdNo": "420281199007018819",
+                "legalPhone": "13987654377",
+                "legalDocCert": 1,
+                "bankCardNo": "7478378438781711",
+                "bankAddr": "中山路支行",
+                "contactAName": "李四",
+                "contactAPhone": "13987654321",
+                "contactARelation": "父子",
+                "contactBName": "王五",
+                "contactBPhone": "13987654321",
+                "contactBRelation": "父子",
+                "residentialAddress": "宜山路"
+            }
+        },
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}

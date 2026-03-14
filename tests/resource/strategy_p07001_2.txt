@@ -1,0 +1,34 @@
+{
+    "strategyParam":{
+        "appId":"0000000000",
+        "reqNo":"Q516244816204562432",
+        "stepReqNo":"S516244816233922560",
+        "productCode":"07001",
+        "queryData":[
+            {
+                "id":281412,
+                "parentId":0,
+                "name":"何志岗",
+                "idno":"511122197312150718",
+                "phone":"15183307777",
+                "userType":"PERSONAL",
+                "relation":"MAIN",
+                "extraParam":{
+                    "workUnit":null,
+                    "postalAddress":null,
+                    "liveAddress":null,
+                    "spousePhone":null,
+                    "spouseIdNo":null,
+                    "spouseName":null,
+                    "marryState":null,
+                    "houseAddress":null
+                }
+            }
+        ],
+        "preReportReqNo":"Q516247398054526976",
+        "single":false,
+        "renewLoans":false,
+        "versionNo":"1.0"
+    },
+    "strategyResult":null
+}

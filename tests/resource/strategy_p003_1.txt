@@ -1,0 +1,279 @@
+{
+    "strategyParam": {
+        "reqNo": "Q412316320361775104",
+        "stepReqNo": "S412316320382746624",
+        "productCode": "003",
+        "queryData": [
+            {
+                "id": 13427,
+                "parentId": 0,
+                "name": "施网明",
+                "idno": "310108196610024859",
+                "phone": "13816716288",
+                "userType": "PERSONAL",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_PERSONAL",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "07001",
+                    "09001",
+                    "10001",
+                    "11001",
+                    "12001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "17001",
+                    "18001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13428,
+                "parentId": 0,
+                "name": "程正应",
+                "idno": "340122197611046619",
+                "phone": "",
+                "userType": "PERSONAL",
+                "fundratio": 0.6,
+                "applyAmo": 0.0,
+                "baseType": "U_S_PERSONAL",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00001",
+                    "16001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13429,
+                "parentId": 0,
+                "name": "黎小波",
+                "idno": "612429198910066735",
+                "phone": "",
+                "userType": "PERSONAL",
+                "fundratio": 0.6,
+                "applyAmo": 0.0,
+                "baseType": "U_S_PERSONAL",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00001",
+                    "16001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13430,
+                "parentId": 0,
+                "name": "长沙县茂兴种养专业合作社",
+                "idno": "93430121MA4PD1EY8H",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.1,
+                "applyAmo": 0.0,
+                "baseType": "U_S_COMPANY",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "27001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13431,
+                "parentId": 0,
+                "name": "上海正逸机电设备有限公司",
+                "idno": "91310114082073798W",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_COMPANY",
+                "relation": "MAIN",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13432,
+                "parentId": 13427,
+                "name": "陈晶珍",
+                "idno": "350802198801123047",
+                "phone": "15921664870",
+                "userType": "PERSONAL",
+                "fundratio": 0.0,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SP_PERSONAL",
+                "relation": "CONTROLLER_SPOUSE",
+                "bizType": [
+                    "00001",
+                    "01001",
+                    "02001",
+                    "05001",
+                    "05002",
+                    "06001",
+                    "07001",
+                    "09001",
+                    "10001",
+                    "11001",
+                    "12001",
+                    "13001",
+                    "14001",
+                    "16001",
+                    "17001",
+                    "18001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13433,
+                "parentId": 13432,
+                "name": "上海点牛互联网金融信息服务有限公司",
+                "idno": "91310000MA1K32DCXU",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.1,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SP_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "fffff"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13434,
+                "parentId": 13432,
+                "name": "湖南青凰网络科技有限公司",
+                "idno": "91430100MA4PT4KG46",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.3,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SP_LG_COMPANY",
+                "relation": "LEGAL",
+                "bizType": [
+                    "fffff"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13435,
+                "parentId": 13427,
+                "name": "上海池妙贸易有限公司",
+                "idno": "91310112MA1GBF7J48",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.3,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SH_M_COMPANY",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "27001"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13436,
+                "parentId": 13427,
+                "name": "上海乾享机械设备有限公司",
+                "idno": "913101207747584215",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.3,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_LG_COMPANY",
+                "relation": "LEGAL",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13437,
+                "parentId": 13427,
+                "name": "上海慧百健康管理有限公司",
+                "idno": "91310114324236052C",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.6,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_SH_H_COMPANY",
+                "relation": "SHAREHOLDER",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ]
+            },
+            {
+                "id": 13438,
+                "parentId": 13427,
+                "name": "上海郎仁实业有限公司",
+                "idno": "91310120078131254X",
+                "phone": "",
+                "userType": "COMPANY",
+                "fundratio": 0.3,
+                "applyAmo": 0.0,
+                "baseType": "U_COM_CT_CT_COMPANY",
+                "relation": "CONTROLLER",
+                "bizType": [
+                    "00001",
+                    "16002",
+                    "24001",
+                    "f0004",
+                    "f0005"
+                ],
+                "rules": [
+
+                ]
+            }
+        ],
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}

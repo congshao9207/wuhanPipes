@@ -1,0 +1,20 @@
+{
+  "productCode": "004",
+  "queryData": [
+    {
+      "authorStatus": "AUTHORIZED",
+      "fundratio": 0.0000,
+      "id": 4789,
+      "idno": "350500199104214010",
+      "name": "张呈祥",
+      "parentId": 0,
+      "phone": "13789940389",
+      "relation": "MAIN",
+      "userType": "PERSONAL",
+      "applyAmo":22.4
+    }
+  ],
+  "reqNo": "Q394106614698901504",
+  "stepReqNo": "S394106614728261632",
+  "versionNo": "1.0"
+}

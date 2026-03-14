@@ -1,0 +1,36 @@
+{
+    "strategyParam": {
+        "appId": "0000000000",
+        "reqNo": "Q660570397577740288",
+        "stepReqNo": "S660570397632266240",
+        "productCode": "07001",
+        "queryData": [
+            {
+                "id": 1110350,
+                "parentId": 0,
+                "name": "王龙艳",
+                "idno": "230921196803071023",
+                "phone": "13621029055",
+                "userType": "PERSONAL",
+                "applyAmo": 1000000.0000,
+                "relation": "MAIN",
+                "isGrt":1,
+                "extraParam": {
+                    "houseAddress": "山东省聊城市高唐县琉璃寺镇西高村392号",
+                    "liveAddress": "北京市市辖区大兴区枣园东里36号楼12层1单元1201",
+                    "marryState": "MARRIED",
+                    "postalAddress": "北京市市辖区大兴区枣园东里36号楼12层1单元1201",
+                    "spouseIdNo": "372527197111065275",
+                    "spouseName": "高温洋",
+                    "spousePhone": "13901259262",
+                    "workUnit": "null,王龙艳,王龙艳,高温洋"
+                }
+            }
+        ],
+        "preReportReqNo": "CF660236130789289984",
+        "single": false,
+        "renewLoans": false,
+        "versionNo": "1.0"
+    },
+    "strategyResult": null
+}
