@@ -1,3 +1,4 @@
+# @Time : 12/11/20 9:52 AM 
 # @Author : lixiaobo
 # @File : micro_loan_trans_flow_executor.py 
 # @Software: PyCharm
@@ -33,15 +34,12 @@ class MicroLoanTransFlowExecutor(MicroLoanFlow):
             base_type_service = BaseTypeServiceV3(self.query_data_array)
             main_query_data = None
             subjects = []
-            self.query_data_array = self.query_data_array if self.query_data_array is not None else {}
             for data in self.query_data_array:
-                if data is None:
-                    continue
                 data["preReportReqNo"] = pre_report_req_no
                 data["baseTypeDetail"] = base_type_service.parse_base_type(data)
                 subjects.append(data)
 
-                if data is not None and data.get("relation") == "MAIN":
+                if data.get("relation") == "MAIN":
                     main_query_data = data
 
             # 决策调用及view变量清洗
@@ -49,15 +47,12 @@ class MicroLoanTransFlowExecutor(MicroLoanFlow):
             resp = p.strategy(False, self.df_client, subjects, main_query_data, self.product_code, self.req_no, code_info=["51001"],
                               clean_view_var=False)
             item_data_list = []
-            subjects = subjects if subjects is not None else []
             for subject in subjects:
-                if subject is None:
-                    continue
                 item_data = {
                     "queryData": subject
                 }
 
-                if subject is not None and subject.get("relation") == "MAIN":
+                if subject.get("relation") == "MAIN":
                     del subject["strategyInputVariables"]["single"]
                     item_data.update(resp)
                     subject["segmentName"] = subject.get("nextSegmentName")
@@ -78,13 +73,10 @@ class MicroLoanTransFlowExecutor(MicroLoanFlow):
 
         main_node = None
         response_array = []
-        self.query_data_array = self.query_data_array if self.query_data_array is not None else {}
         for data in self.query_data_array:
-            if data is None:
-                continue
             base_type = base_type_service.parse_base_type(data)
             data["baseTypeDetail"] = base_type
-            if data is not None and data.get("relation") == "MAIN":
+            if data.get("relation") == "MAIN":
                 main_node = data
             else:
                 response_array.append(data)

@@ -254,16 +254,10 @@ class PcreditPortraitsNewView(ModuleProcessor):
     def _util_get_total_consume_loan_overdue_money_5y(self, raw_df):
         total_money_list = []
         df_group = raw_df.groupby('id')
-        df_group = df_group if df_group else {}
         for key, df in df_group:
-            if df is None:
-                continue
             list_repayment_amt = []
             list_status = []
-            df = df if df else {}
             for index, row in df.iterrows():
-                if row is None:
-                    continue
                 status = row['status']
                 repayment_amt = row['repayment_amt']
                 if status == '1' and len(list_status) > 1:

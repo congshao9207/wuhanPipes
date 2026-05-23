@@ -134,8 +134,6 @@ class JsonUnionTitle(TransFlow):
 
         account_df = sql_to_df(sql=sql1,
                                params={"report_req_no": self.reqno})
-        account_df.rename(columns={'relatedname': 'relatedName', 'bankname': 'bankName', 'bankaccount': 'bankAccount'},
-                          inplace=True)
         account_df['trans_flow_src_type'] = account_df['trans_flow_src_type'].fillna(1)
         # 20230308非实名版仅保留选择的文件
         product_code = self.origin_data['strategyInputVariables']['product_code']
@@ -150,7 +148,6 @@ class JsonUnionTitle(TransFlow):
                                 pd.isna((account_df['account_id']))]
         account_df.loc[account_df['start_time'] < year_ago, 'start_time'] = year_ago
         # 关联人信息
-        print("account_df:", account_df.shape[0], account_df.columns)
         relation_df = account_df.drop_duplicates(['relatedName', 'relation'])
         relation_df.rename({'relatedName': 'name'}, axis=1, inplace=True)
         # 流水基本信息

@@ -1,3 +1,4 @@
+# @Time : 2020/9/27 9:11 AM 
 # @Author : lixiaobo
 # @File : DataFrameRotator.py 
 # @Software: PyCharm
@@ -34,20 +35,16 @@ class DataFrameFlatter(object):
             return
         row_index = -1
         data_line = {}
-        if not df.empty:
-            for row in df.itertuples():
-                if row is None:
+        for row in df.itertuples():
+            row_index = row_index + 1
+            if not fields:
+                fields = row.__getattribute__("_fields")
+            for field in fields:
+                if field == self.v_name:
                     continue
-                row_index = row_index + 1
-                if not fields:
-                    fields = row.__getattribute__("_fields") if row else {}
-                else:
-                    for field in fields:
-                        if field and field == self.v_name:
-                            continue
-                        elif field == self.k_name:
-                            data_line[row.__getattribute__(field)] = row.__getattribute__(self.v_name) if row else None
-                        elif not field.startswith("_"):
-                            data_line[field] = row.__getattribute__(field) if row else {}
+                elif field == self.k_name:
+                    data_line[row.__getattribute__(field)] = row.__getattribute__(self.v_name)
+                elif not field.startswith("_"):
+                    data_line[field] = row.__getattribute__(field)
         return fields, data_line
 

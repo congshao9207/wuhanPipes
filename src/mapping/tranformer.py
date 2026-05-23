@@ -134,7 +134,7 @@ def structured(df):
     df_t=df_t.sort_index()
 
     #兼容解析结果异常情况，第一行为列名，删除第一行为空的列
-    if len(df_t)>1 and df_t.iloc[1,0]=='资产':
+    if df_t.iloc[1,0]=='资产':
         df_t = df_t.loc[:, ~(df_t.iloc[0].isna())]
     return df_t
 

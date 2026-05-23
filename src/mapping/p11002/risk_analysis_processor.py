@@ -350,7 +350,7 @@ class RiskAnalysisProcessor(ModuleProcessor):
         筛选有12月份财报的年份
         '''
         sql='''
-        SELECT * FROM finance_table_info WHERE  task_no=%(task_no)s
+        SELECT * FROM `trans_flow_taia`.`finance_table_info` WHERE  task_no=%(task_no)s
         '''
         year_df=sql_to_df(sql,params={"task_no":self.cached_data["task_no"]})
         '''
@@ -432,41 +432,40 @@ class RiskAnalysisProcessor(ModuleProcessor):
         if profit_df.shape[0]>0:
             profit_year_list=profit_df['end_date'].dt.year.unique()
             if len(profit_year_list)>0:
-                if str(max(profit_year_list)) in year_dict.keys():
-                    profit_year=year_dict[str(max(profit_year_list))]
-                    operating_profit = self.empty_to_zero_enhanced('operating_profit'+profit_year)  # 营业利润
-                    investment_income = self.empty_to_zero_enhanced('investment_income'+profit_year)  # 投资收益
-                    non_operating_income_and_expense = self.empty_to_zero_enhanced('non_operating_income'+profit_year) - self.empty_to_zero_enhanced(
-                        'non_operating_expense'+profit_year)  # 营业外收支
-                    net_profit = self.empty_to_zero_enhanced('net_profit'+profit_year)  # 净利润
-                    operating_profit_flag = '+' if operating_profit > 0 else '-' if operating_profit<0 else '/'
-                    investment_income_flag = '+' if investment_income > 0 else '-' if investment_income<0 else '/'
-                    non_operating_income_and_expense_flag = '+' if non_operating_income_and_expense > 0 else '-' if non_operating_income_and_expense<0 else '/'
-                    net_profit_flag = '+' if net_profit > 0 else '-' if net_profit<0 else '/'
-                    flag = operating_profit_flag + investment_income_flag + non_operating_income_and_expense_flag + net_profit_flag
-                    summary_dict = {
-                        "++++": "盈利能力比较稳定，状况比较好。",
-                        "++--": "虽然企业的利润为负，但是是由于企业的营业外收支导致。不构成企业的经常性利润，所以并不影响企业的盈利能力状况，这种亏损状况是暂时的。​​建议​​核实非经常性亏损是否持续影响，关注扣除非经营性损益后的净利润。",
-                        "+---": "企业的盈利情况比较差，投资业务失利导致企业的经营性利润比较差，企业的盈利能力不够稳定。",
-                        "-+++": "企业的利润水平依赖于企业的投资业务和营业外业务，其投资项目的好坏直接关系到企业的盈利能力，B135应该关注其项目收益的稳定性。",
-                        "--++": "企业的盈利状况很差，虽然当年盈利，但是其经营依赖于企业的营业外收支（如政府补贴、资产处置），持续下去会导致企业破产。",
-                        "----": "企业的盈利状况非常差，企业的财务状况存在危机。"
-                    }
-                    summary = summary_dict[flag] if flag in summary_dict.keys() else ""
-                    self.variables['profit_portrait'] = {
-                        "operating_profit": operating_profit,
-                        "investment_income": investment_income,
-                        "non_operating_income_and_expense": non_operating_income_and_expense,
-                        "net_profit": net_profit,
-                        "summary": summary
-                    }
+                profit_year=year_dict[str(max(profit_year_list))]
+                operating_profit = self.empty_to_zero_enhanced('operating_profit'+profit_year)  # 营业利润
+                investment_income = self.empty_to_zero_enhanced('investment_income'+profit_year)  # 投资收益
+                non_operating_income_and_expense = self.empty_to_zero_enhanced('non_operating_income'+profit_year) - self.empty_to_zero_enhanced(
+                    'non_operating_expense'+profit_year)  # 营业外收支
+                net_profit = self.empty_to_zero_enhanced('net_profit'+profit_year)  # 净利润
+                operating_profit_flag = '+' if operating_profit > 0 else '-' if operating_profit<0 else '/'
+                investment_income_flag = '+' if investment_income > 0 else '-' if investment_income<0 else '/'
+                non_operating_income_and_expense_flag = '+' if non_operating_income_and_expense > 0 else '-' if non_operating_income_and_expense<0 else '/'
+                net_profit_flag = '+' if net_profit > 0 else '-' if net_profit<0 else '/'
+                flag = operating_profit_flag + investment_income_flag + non_operating_income_and_expense_flag + net_profit_flag
+                summary_dict = {
+                    "++++": "盈利能力比较稳定，状况比较好。",
+                    "++--": "虽然企业的利润为负，但是是由于企业的营业外收支导致。不构成企业的经常性利润，所以并不影响企业的盈利能力状况，这种亏损状况是暂时的。​​建议​​核实非经常性亏损是否持续影响，关注扣除非经营性损益后的净利润。",
+                    "+---": "企业的盈利情况比较差，投资业务失利导致企业的经营性利润比较差，企业的盈利能力不够稳定。",
+                    "-+++": "企业的利润水平依赖于企业的投资业务和营业外业务，其投资项目的好坏直接关系到企业的盈利能力，B135应该关注其项目收益的稳定性。",
+                    "--++": "企业的盈利状况很差，虽然当年盈利，但是其经营依赖于企业的营业外收支（如政府补贴、资产处置），持续下去会导致企业破产。",
+                    "----": "企业的盈利状况非常差，企业的财务状况存在危机。"
+                }
+                summary = summary_dict[flag] if flag in summary_dict.keys() else ""
+                self.variables['profit_portrait'] = {
+                    "operating_profit": operating_profit,
+                    "investment_income": investment_income,
+                    "non_operating_income_and_expense": non_operating_income_and_expense,
+                    "net_profit": net_profit,
+                    "summary": summary
+                }
 
         # 现金流画像,覆盖3年 没有传现金流报表，不展示
         cash_flow_df = year_df[(year_df['table_type'] == 'CASH_FLOW')]
         if cash_flow_df.shape[0]>0:
             task_no = self.cached_data["task_no"]
             sql = '''
-            SELECT * FROM finance_report_parse_record 
+            SELECT * FROM trans_flow_taia.`finance_report_parse_record` 
             where task_no = %(task_no)s  order by created_date DESC LIMIT 1
             '''
             df_finance_report_parse_record = sql_to_df(sql=sql, params={"task_no": task_no})

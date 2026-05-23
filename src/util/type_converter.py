@@ -6,7 +6,7 @@ from datetime import date
 import pandas as pd
 from numpy import int64
 from pandas import Series
-from pandas import Timestamp
+from pymysql import Timestamp
 
 from logger.logger_util import LoggerUtil
 

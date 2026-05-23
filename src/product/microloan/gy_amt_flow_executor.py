@@ -1,3 +1,4 @@
+# @Time : 12/11/20 9:57 AM 
 # @Author : lixiaobo
 # @File : micro_loan_amt_flow_executor.py 
 # @Software: PyCharm
@@ -24,14 +25,12 @@ class SegmentGyAmtFlowExecutor(SegmentFlow):
     def execute(self):
         subject = []
         cache_array = []
-        self.query_data_array = self.query_data_array if self.query_data_array is not None else {}
+
         for data in self.query_data_array:
-            if data is None:
-                continue
             curr_vars = self.fetch_input_variables(data)
             cache_array.append(curr_vars)
             subject.append(data)
-            segment_name = data.get("nextSegmentName") if data else {}
+            segment_name = data.get("nextSegmentName")
             if segment_name == "loan_amt":
                 # 修改法人的流程状态
                 data['bizType'] = ["fffff"]

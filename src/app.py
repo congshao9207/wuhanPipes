@@ -70,7 +70,20 @@ def strategy():
         df_client = DefensorClient(request.headers)
         handler.df_client = df_client
         handler.sql_db = sql_session
-
+        # if product_code == "0800":
+        #     # 创建线程，指定目标函数和参数
+        #     thread = threading.Thread(
+        #         target=handler.async_strategy,
+        #         args=(json_data,)
+        #     )
+        #     thread.daemon = True
+        #     # 启动线程
+        #     thread.start()
+        #     return jsonify({
+        #         "code": "0000",
+        #         "msg": "task-accpet-success"
+        #     })
+        # else:
         resp = handler.call_strategy(json_data)
         return jsonify(resp)
     except Exception as e:
@@ -148,69 +161,24 @@ def flask_global_exception_handler(e):
     return ServerException()
 
 
-# def _get_product_handler(product_code) -> Generate:
-#     model = None
-#     try:
-#         model = importlib.import_module("product.p" + str(product_code))
-#     except ModuleNotFoundError as err:
-#         try:
-#             model = importlib.import_module("product.P" + str(product_code))
-#         except ModuleNotFoundError as err:
-#             logger.error(str(err))
-#             return Generate()
-#     try:
-#         api_class = getattr(model, "P" + str(product_code))
-#         api_instance = api_class()
-#         return api_instance
-#     except ModuleNotFoundError as err:
-#         logger.error(str(err))
-#         return Generate()
-
 def _get_product_handler(product_code) -> Generate:
-    """
-    获取产品处理器
-
-    Args:
-        product_code: 产品代码，如 "11001"
-
-    Returns:
-        Generate实例
-    """
+    model = None
     try:
-        # 文件名是小写 p，所以使用小写导入
-        module_name = f"product.p{product_code}"
-        logger.debug(f"尝试导入产品模块: {module_name}")
-
-        model = importlib.import_module(module_name)
-
-        # 类名是大写 P
-        class_name = f"P{product_code}"
-        logger.debug(f"尝试获取类: {class_name}")
-
-        if hasattr(model, class_name):
-            api_class = getattr(model, class_name)
-            api_instance = api_class()
-            logger.info(f"成功加载产品处理器: {class_name}")
-            return api_instance
-        else:
-            logger.error(f"模块 {module_name} 中未找到类 {class_name}")
-            # 列出模块中可用的类
-            available_classes = [attr for attr in dir(model) if not attr.startswith('_')]
-            logger.debug(f"模块中可用的类: {available_classes}")
-            return Generate()
-
+        model = importlib.import_module("product.p" + str(product_code))
     except ModuleNotFoundError as err:
-        logger.error(f"产品模块不存在: {err}")
-        # 可以添加文件路径调试信息
-        import os
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        expected_file = os.path.join(current_dir, "product", f"p{product_code}.py")
-        logger.debug(f"期望的文件路径: {expected_file}")
-        logger.debug(f"文件是否存在: {os.path.exists(expected_file)}")
+        try:
+            model = importlib.import_module("product.P" + str(product_code))
+        except ModuleNotFoundError as err:
+            logger.error(str(err))
+            return Generate()
+    try:
+        api_class = getattr(model, "P" + str(product_code))
+        api_instance = api_class()
+        return api_instance
+    except ModuleNotFoundError as err:
+        logger.error(str(err))
         return Generate()
-    except Exception as err:
-        logger.error(f"加载产品处理器时出错: {err}")
-        return Generate()
+
 
 def _get_handler(folder, prefix, code) -> Parser:
     try:
@@ -224,14 +192,12 @@ def _get_handler(folder, prefix, code) -> Parser:
 
 
 def sql_db():
-    db_url = 'dm+dmPython://%(user)s:%(pw)s@%(host)s:%(port)s?schema=%(db)s' % GEARS_DB
-    # db_url = 'mysql+pymysql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % GEARS_DB
+    db_url = 'mysql+pymysql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % GEARS_DB
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = False
     db = SQLAlchemy(app)
     return db
-
 
 
 sql_session = sql_db()

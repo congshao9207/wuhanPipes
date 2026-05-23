@@ -37,21 +37,11 @@ class Csv(PyHeaderFile):
     def write(self, *args, **kwargs):
         # write the value in the file
         if isinstance(self.name, str) or isinstance(self.name, unicode):
-            try:
-                if not hasattr(self, '_file'):
-                    self._file = open(self.name, 'a')
-                elif self._file.mode == 'r':
-                    self._file.close()
-                    self._file = open(self.name, 'a')
-            except Exception as e:
-                print("write error")
-                # 确保在异常情况下释放已分配的资源
-                if hasattr(self, '_file') and self._file is not None:
-                    try:
-                        self._file.close()
-                    except:
-                        pass  # 忽略关闭时的异常
-                    self._file = None
+            if not hasattr(self, '_file'):
+                self._file = open(self.name, 'a')
+            elif self._file.mode == 'r':
+                self._file.close()
+                self._file = open(self.name, 'a')
         else:
             self._file = self.name
         writer = self.csv.DictWriter(self._file, delimiter=self.delimiters[0],
@@ -80,13 +70,8 @@ class Csv(PyHeaderFile):
         elif path:
             name = 'default.csv'
             content = self.close()
-            try:
-                with open(self.path.join(path, name), 'w') as f:
-                    f.write(content)
-            except IOError as e:
-                print ("File open Error")
-            except Exception as e:
-                print("File open Error.")
+            with open(self.path.join(path, name), 'w') as f:
+                f.write(content)
         else:
            return self.close()
 
@@ -118,15 +103,7 @@ class Csv(PyHeaderFile):
             for i in range(0, self.header_line):
                 next(self.reader)
             self.header = next(self.reader)
-        except Exception as e:
-            # 确保在异常情况下释放已分配的资源
-            if hasattr(self, '_file') and self._file is not None and hasattr(self._file, 'close'):
-                try:
-                    self._file.close()
-                except:
-                    pass  # 忽略关闭时的异常
-                self._file = None
-            print("_open error")
+        except:
             if encoding != "UTF-8":
                 self._open(encoding="UTF-8")
 

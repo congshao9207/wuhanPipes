@@ -3,8 +3,7 @@ import re
 from mapping.tranformer import Transformer,structured
 
 from util.mysql_reader import sql_to_df
-from logger.logger_util import LoggerUtil
-logger = LoggerUtil().logger(__name__)
+
 
 class T11003(Transformer):
     '''
@@ -28,36 +27,18 @@ class T11003(Transformer):
 
 
     def fetch_financial_report_details(self,df_finance_table_info):
-        try:
-            # 定义顺序
-            order = ['YEAR', 'HALF_YEAR', 'QUARTER', 'MONTH']
-            df_finance_table_info['cycle_type'] = pd.Categorical(df_finance_table_info['cycle_type'], categories=order,
-                                                                 ordered=True)
+        # 定义顺序
+        order = ['YEAR', 'HALF_YEAR', 'QUARTER', 'MONTH']
+        df_finance_table_info['cycle_type'] = pd.Categorical(df_finance_table_info['cycle_type'], categories=order,
+                                                             ordered=True)
 
-            # 主体上传的所有财务报表
-            sql = '''
-                                select * from finance_table_data where file_detail_no in %(file_detail_no)s
-                            '''
-            file_no_list = df_finance_table_info['req_no'].to_list()
-            # 确保列表不为空
-            if not file_no_list:
-                return pd.DataFrame()
-
-            # 处理单元素情况
-            if len(file_no_list) == 1:
-                # 修改SQL为等于条件
-                sql = '''
-                    select * from finance_table_data where file_detail_no = %(file_detail_no)s
-                '''
-                params = {"file_detail_no": file_no_list[0]}
-            else:
-                params = {"file_detail_no": tuple(file_no_list)}
-
-            df_finance_table_data = sql_to_df(sql=sql, params=params)
-            return df_finance_table_data
-        except Exception as e:
-            logger.error(f"预解析获取财务报表详细数据时发生错误：{str(e)}")
-            raise
+        # 主体上传的所有财务报表
+        sql = '''
+                            select * from finance_table_data where file_detail_no in %(file_detail_no)s
+                        '''
+        file_no_list = df_finance_table_info['req_no'].to_list()
+        df_finance_table_data = sql_to_df(sql=sql, params={"file_detail_no": tuple(file_no_list)})
+        return df_finance_table_data
 
     # 获取报表信息
     def fetch_financial_report_info(self):
@@ -78,8 +59,6 @@ class T11003(Transformer):
         #数据标准化
         df_t = structured(df_finance_table_data)
 
-        if df.shape[0]==0:
-            return
         if df.loc[0,'table_type'] == 'ASSET_DEBT':
             for index,row in df_t.iterrows():
                 if row[0]=='资产':
@@ -94,14 +73,12 @@ class T11003(Transformer):
                     break
         df_t = df_t.fillna('')
         df_t = df_t.loc[:, ~(df_t == '').all()]
-        if df_t.shape[0]>0:
-            df_t = df_t.reset_index(drop=True)
-            #第一行作为列名
-            df_t.columns = ['识别科目' if i=='' and '识别科目' not in df_t.iloc[0] else i for i in df_t.iloc[0]]
-            df_t = df_t[1:].reset_index(drop=True)
-            if '行次' in list(df_t.columns) and df.loc[0,'table_type'] == 'ASSET_DEBT':
-                df_t=df_t.drop(columns=['行次'])
+        #第一行作为列名
+        df_t.columns = ['识别科目' if i=='' and '识别科目' not in df_t.iloc[0] else i for i in df_t.iloc[0]]
+        df_t = df_t[1:].reset_index(drop=True)
+        if '行次' in list(df_t.columns) and df.loc[0,'table_type'] == 'ASSET_DEBT':
+            df_t=df_t.drop(columns=['行次'])
 
-            #兼容解析结果异常情况：表格列数小于3列；资产负债表列数不是2的倍数
-            if len(df_t.columns)<3 or (df.loc[0,'table_type'] == 'ASSET_DEBT' and (len(df_t.columns)%2!=0 or len(df_t.columns)<6 or ('资产' not in str(df_t.columns) and '负债' not in str(df_t.columns)))):
-                self.variables['exception_table_no']=self.cached_data['table_no']
+        #兼容解析结果异常情况：表格列数小于3列；资产负债表列数不是2的倍数
+        if len(df_t.columns)<3 or (df.loc[0,'table_type'] == 'ASSET_DEBT' and (len(df_t.columns)%2!=0 or len(df_t.columns)<6 or ('资产' not in str(df_t.columns) and '负债' not in str(df_t.columns)))):
+            self.variables['exception_table_no']=self.cached_data['table_no']

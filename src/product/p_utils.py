@@ -102,8 +102,6 @@ def score_to_int(strategy_resp):
     if resp_variables is not None:
         variables_ = resp_variables[0]
         for key, value in variables_.items():
-            if key is None:
-                continue
             if key.startswith('score') & ~key.endswith('level'):
                 variables_[key] = int(round(value))
 
@@ -112,10 +110,8 @@ def _relation_risk_subject(strategy_resp, out_decision_code):
     branch_code = jsonpath(strategy_resp, '$.StrategyOneResponse.Body.Application.Categories..Variables')
     if type(branch_code) == bool:
         return
-    branch_code = branch_code if branch_code else {}
+
     for c in branch_code:
-        if c is None:
-            continue
-        code_key = c.get('out_decisionBranchCode') if c else {}
+        code_key = c.get('out_decisionBranchCode')
         if code_key is not None and code_key in out_decision_code.keys():
             c['queryData'] = out_decision_code[code_key]

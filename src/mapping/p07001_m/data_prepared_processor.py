@@ -1,3 +1,4 @@
+# @Time : 2020/4/24 9:48 AM 
 # @Author : lixiaobo
 # @File : data_prepared_processor.py 
 # @Software: PyCharm
@@ -113,12 +114,10 @@ class DataPreparedProcessor(ModuleProcessor):
             return
         spouse_data = None
         for data in query_data:
-            if data is None:
-                continue
-            if data and data.get('relation') == 'SPOUSE':
+            if data.get('relation') == 'SPOUSE':
                 spouse_data = data
                 break
-        if spouse_data and spouse_data is None:
+        if spouse_data is None:
             return
         extra_param = spouse_data.get('extraParam')
         self.cached_data['spouseName'] = spouse_data.get('name')
@@ -146,10 +145,7 @@ class DataPreparedProcessor(ModuleProcessor):
         if query_data is None:
             self.cached_data['ent_code'] = ent_code
         else:
-            if query_data:
-                for data in query_data:
-                    if data is None:
-                        continue
-                    if data and data.get('userType') == 'COMPANY':
-                        ent_code.append(data.get('idno'))
-                self.cached_data['ent_code'] = ent_code
+            for data in query_data:
+                if data.get('userType') == 'COMPANY':
+                    ent_code.append(data.get('idno'))
+            self.cached_data['ent_code'] = ent_code

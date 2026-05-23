@@ -1,3 +1,4 @@
+# @Time : 12/11/20 9:58 AM 
 # @Author : lixiaobo
 # @File : micro_loan_common_flow_executor.py 
 # @Software: PyCharm
@@ -21,11 +22,8 @@ class ELoanCommonFlowExecutor(MicroLoanFlow):
     def execute(self):
         subject = []
         # 遍历query_data_array调用strategy
-        self.query_data_array = self.query_data_array if self.query_data_array else {}
         for data in self.query_data_array:
-            if data is None:
-                continue
-            segment_name = data.get("nextSegmentName") if data else {}
+            segment_name = data.get("nextSegmentName")
             if segment_name != "loan_amt" and segment_name != "/":
                 array, resp = self._strategy_hand(self.json_data, data, self.product_code, self.req_no)
                 subject.append(resp)

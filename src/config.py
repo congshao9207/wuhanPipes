@@ -80,20 +80,11 @@ GEARS_DB = {
 #     'db': os.getenv('DB_NAME', 'gears'),
 # }
 
-# GEARS_DB = {
-#     'user': os.getenv('DB_USER', 'root'),
-#     'pw': os.getenv('DB_PW', ''),
-#     'host': os.getenv('DB_HOST', '192.168.2.26'),
-#     'port': os.getenv('DB_PORT', 3306),
-#     'db': os.getenv('DB_NAME', 'wuhan_taia'),
-# }
-
-
 GEARS_DB = {
-    'user': os.getenv('DB_USER', 'SYSDBA'),
-    'pw': os.getenv('DB_PW', 'SYSDBA001'),
-    'host': os.getenv('DB_HOST', '192.168.2.29'),
-    'port': os.getenv('DB_PORT', 30237),
-    'db': os.getenv('DB_NAME', 'wuhan_taia'),
+    'user': os.getenv('DB_USER', 'root'),
+    'pw': os.getenv('DB_PW', ''),
+    'host': os.getenv('DB_HOST', '192.168.2.26'),
+    'port': os.getenv('DB_PORT', 3306),
+    'db': os.getenv('DB_NAME', 'trans_flow_taia'),
 }
 

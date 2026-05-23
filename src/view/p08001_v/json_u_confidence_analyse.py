@@ -37,9 +37,9 @@ class JsonUnionConfidenceAnalyse(TransFlow):
     def process(self):
         self.variables['confidence_analyse'] = []
         basic_sql = """
-                SELECT ap.related_name AS relatedName, acc.id as account_id,
+                SELECT ap.related_name AS relatedName, acc.id as account_id, 
                 ap.relationship AS relation, ap.account_id as unique_id,
-                ac.bank AS bankName,ac.account_no AS bankAccount, acc.out_req_no,
+                ac.bank AS bankName,ac.account_no AS bankAccount, acc.out_req_no, 
                 acc.start_time, acc.end_time, acc.trans_flow_src_type, ap.id_card_no, acc.file_id
                 FROM trans_apply ap
                 left join trans_account ac
@@ -49,8 +49,6 @@ class JsonUnionConfidenceAnalyse(TransFlow):
                 where ap.report_req_no = %(report_req_no)s
             """
         basic_df = sql_to_df(sql=basic_sql, params={"report_req_no": self.reqno})
-        basic_df.rename(columns={'relatedname': 'relatedName', 'bankname': 'bankName', 'bankaccount': 'bankAccount'},
-                        inplace=True)
         # 20230308非实名版仅保留选择的文件
         # 20240620 流水3.0 不再区分product_code，统一筛选file_id
         # product_code = self.origin_data['strategyInputVariables']['product_code']
@@ -63,9 +61,17 @@ class JsonUnionConfidenceAnalyse(TransFlow):
         basic_df.loc[basic_df['start_time'] < year_ago, 'start_time'] = year_ago
         account_list = list(map(str, basic_df[pd.notna(basic_df['out_req_no'])]['out_req_no'].unique().tolist()))
 
-        flow_sql = f"""select * from trans_report_flow where out_req_no in ({'"'+'","'.join(account_list)+'"'})"""
-        total_flow = sql_to_df(sql=flow_sql)
-        total_flow = total_flow[total_flow['trans_time'] >= year_ago]
+        # 优先复用已缓存的流水数据，避免重复查询 trans_report_flow
+        if self.trans_u_flow_portrait is not None and set(account_list).issubset(set(self.trans_u_flow_portrait['out_req_no'].unique())):
+            total_flow = self.trans_u_flow_portrait[self.trans_u_flow_portrait['trans_time'] >= year_ago].copy()
+        else:
+            # ---- 原有的查询逻辑 ----
+            # flow_sql = f"""select * from trans_report_flow where out_req_no in ({'"'+'","'.join(account_list)+'"'})"""
+            # total_flow = sql_to_df(sql=flow_sql)
+            # total_flow = total_flow[total_flow['trans_time'] >= year_ago]
+            flow_sql = f"""select * from trans_report_flow where out_req_no in ({'"'+'","'.join(account_list)+'"'})"""
+            total_flow = sql_to_df(sql=flow_sql)
+            total_flow = total_flow[total_flow['trans_time'] >= year_ago]
 
         if not total_flow.empty:
             account_df = basic_df[pd.notna(basic_df.account_id)]
@@ -389,7 +395,7 @@ class JsonUnionConfidenceAnalyse(TransFlow):
     def interest_analyse(self, flow, id_str, year_ago):
         flow['trans_month'] = flow['trans_time'].dt.strftime('%Y-%m')
         single_summary_sql = """select distinct account_id, month, interest_amt, balance_amt,
-            interest_balance_proportion from trans_single_summary_portrait
+            interest_balance_proportion from trans_single_summary_portrait 
             where account_id in (%s) and report_req_no = '%s'""" % (id_str, self.reqno)
         single_df = sql_to_df(single_summary_sql)
         single_df = single_df[(~single_df['month'].str.isnumeric()) &

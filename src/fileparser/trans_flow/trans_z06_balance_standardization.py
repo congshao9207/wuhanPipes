@@ -156,55 +156,116 @@ class TransactionBalance:
             cnt += 1
         self.df = final_df
 
-    def trans_sort(self, df, start=None, basic_df=pd.DataFrame(columns=['trans_amt', 'account_balance'])):
+    def trans_sort(self, df, start=None, basic_df=None):
         """
-        智能排序某一天交易的所有流水，即若因某个交易时间的缺失或者银行数据问题导致交易顺序被打乱，本方法可以将流水顺序智能调整成正确顺序
-        :param df:涉及到某一天的流水
-        :param start:上一天的最后一条交易流水余额
-        :param basic_df:基础数据表
-        :return:如果可以，返回排序好的流水记录
-                如果不可以，返回False
+        智能排序某一天交易的所有流水（优化版）
+        用字典索引替代 DataFrame 过滤，递归中只操作轻量数据结构，最后一次性构建 DataFrame。
+        :param df: 涉及到某一天的流水
+        :param start: 上一天的最后一条交易流水余额
+        :param basic_df: 保留参数兼容性，不再使用
+        :return: 如果可以，返回排序好的流水记录；如果不可以，返回 False
         """
+        logger.info("智能排序某一天交易的所有流水")
         if df.shape[0] == 0:
             return True
-        if start is None:
-            for index in df.index:
-                basic_df = df[df.index == index]
-                res_df = df[df.index != index]
-                if res_df.shape[0] == 0:
-                    return basic_df
-                index_df = self.trans_sort(res_df, basic_df['account_balance'].tolist()[0])
-                if index_df is not False:
-                    return pd.concat([basic_df, index_df], sort=False)
-                else:
+
+        # 预处理：提取为轻量数据结构
+        records = {}  # index -> (last_trans_bal, account_balance)
+        for idx in df.index:
+            records[idx] = (df.at[idx, 'last_trans_bal'], df.at[idx, 'account_balance'])
+
+        # 构建 last_trans_bal -> [index list] 的字典
+        from collections import defaultdict
+        bal_to_indices = defaultdict(list)
+        for idx, (ltb, ab) in records.items():
+            bal_to_indices[ltb].append(idx)
+
+        all_indices = set(records.keys())
+        max_depth = len(all_indices)
+
+        def _dfs(current_bal, remaining, path):
+            """DFS 查找链：current_bal 是上一笔的 account_balance，需要找 last_trans_bal == current_bal 的下一笔"""
+            if not remaining:
+                return path
+            candidates = bal_to_indices[current_bal]
+            for idx in candidates:
+                if idx not in remaining:
                     continue
-            return False
+                remaining.remove(idx)
+                result = _dfs(records[idx][1], remaining, path + [idx])
+                if result is not None:
+                    return result
+                remaining.add(idx)
+            return None
+
+        if start is not None:
+            # 已知起始余额，直接 DFS
+            result = _dfs(start, all_indices.copy(), [])
+            if result is None:
+                return False
+            return df.loc[result]
         else:
-            temp_df = df[df['last_trans_bal'] == start]
-            if temp_df.shape[0] == 0:
-                return False
-            elif temp_df.shape[0] == 1:
-                basic_df = pd.concat([basic_df, temp_df], sort=False)
-                res_df = df[df['last_trans_bal'] != start]
-                if res_df.shape[0] > 0:
-                    another_df = self.trans_sort(res_df, temp_df['account_balance'].tolist()[0])
-                    if another_df is not False:
-                        return pd.concat([basic_df, another_df], sort=False)
-                    else:
-                        return False
-                else:
-                    return basic_df
-            else:
-                for index in temp_df.index:
-                    res_df = df[df.index != index]
-                    basic_df = pd.concat([basic_df, temp_df[temp_df.index == index]], sort=False)
-                    index_df = self.trans_sort(res_df, temp_df.loc[index, 'account_balance'])
-                    if index_df is not False:
-                        return pd.concat([basic_df, index_df], sort=False)
-                    else:
-                        basic_df.drop(index, inplace=True)
-                        continue
-                return False
+            # 未知起始余额，尝试每行作为第一笔
+            for first_idx in df.index:
+                remaining = all_indices.copy()
+                remaining.remove(first_idx)
+                if not remaining:
+                    return df.loc[[first_idx]]
+                first_bal = records[first_idx][1]  # account_balance of first row
+                result = _dfs(first_bal, remaining, [first_idx])
+                if result is not None:
+                    return df.loc[result]
+            return False
+
+    # def trans_sort(self, df, start=None, basic_df=pd.DataFrame(columns=['trans_amt', 'account_balance'])):
+    #     """
+    #     智能排序某一天交易的所有流水，即若因某个交易时间的缺失或者银行数据问题导致交易顺序被打乱，本方法可以将流水顺序智能调整成正确顺序
+    #     :param df:涉及到某一天的流水
+    #     :param start:上一天的最后一条交易流水余额
+    #     :param basic_df:基础数据表
+    #     :return:如果可以，返回排序好的流水记录
+    #             如果不可以，返回False
+    #     """
+    #     if df.shape[0] == 0:
+    #         return True
+    #     if start is None:
+    #         for index in df.index:
+    #             basic_df = df[df.index == index]
+    #             res_df = df[df.index != index]
+    #             if res_df.shape[0] == 0:
+    #                 return basic_df
+    #             index_df = self.trans_sort(res_df, basic_df['account_balance'].tolist()[0])
+    #             if index_df is not False:
+    #                 return pd.concat([basic_df, index_df], sort=False)
+    #             else:
+    #                 continue
+    #         return False
+    #     else:
+    #         temp_df = df[df['last_trans_bal'] == start]
+    #         if temp_df.shape[0] == 0:
+    #             return False
+    #         elif temp_df.shape[0] == 1:
+    #             basic_df = pd.concat([basic_df, temp_df], sort=False)
+    #             res_df = df[df['last_trans_bal'] != start]
+    #             if res_df.shape[0] > 0:
+    #                 another_df = self.trans_sort(res_df, temp_df['account_balance'].tolist()[0])
+    #                 if another_df is not False:
+    #                     return pd.concat([basic_df, another_df], sort=False)
+    #                 else:
+    #                     return False
+    #             else:
+    #                 return basic_df
+    #         else:
+    #             for index in temp_df.index:
+    #                 res_df = df[df.index != index]
+    #                 basic_df = pd.concat([basic_df, temp_df[temp_df.index == index]], sort=False)
+    #                 index_df = self.trans_sort(res_df, temp_df.loc[index, 'account_balance'])
+    #                 if index_df is not False:
+    #                     return pd.concat([basic_df, index_df], sort=False)
+    #                 else:
+    #                     basic_df.drop(index, inplace=True)
+    #                     continue
+    #             return False
 
     def interest_check(self):
         temp_df = self.df

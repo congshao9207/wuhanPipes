@@ -1,3 +1,4 @@
+# @Time : 12/11/20 9:53 AM 
 # @Author : lixiaobo
 # @File : micro_loan_default_flow_executor.py 
 # @Software: PyCharm
@@ -23,12 +24,10 @@ class MicroLoanDefaultFlowExecutor(MicroLoanFlow):
     def execute(self):
         subject = []
         cache_array = []
-        self.query_data_array = self.query_data_array if self.query_data_array is not None else {}
+
         # 遍历query_data_array调用strategy
         for data in self.query_data_array:
-            if data is None:
-                continue
-            segment_name = data.get("nextSegmentName") if data else {}
+            segment_name = data.get("nextSegmentName")
             if segment_name == "default":
                 array, resp = self._strategy_hand(self.json_data, data, self.product_code, self.req_no)
                 subject.append(resp)

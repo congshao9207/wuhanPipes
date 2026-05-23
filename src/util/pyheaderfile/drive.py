@@ -75,20 +75,9 @@ class GSheet(PyHeaderSheet):
         Open the file; get sheets
         :return:
         """
-        try:
-            if not hasattr(self, '_file'):
-                self._file = self.gc.open(self.name)
-                self.sheet_names = self._file.worksheets()
-        except Exception as e:
-            print("File open Error.", e)
-            # 确保在异常情况下释放已分配的资源
-            if hasattr(self, '_file') and self._file is not None:
-                if hasattr(self._file, 'close'):
-                    try:
-                        self._file.close()
-                    except:
-                        pass  # 忽略关闭时的异常
-                self._file = None
+        if not hasattr(self, '_file'):
+            self._file = self.gc.open(self.name)
+            self.sheet_names = self._file.worksheets()
 
     def _open_sheet(self):
         """

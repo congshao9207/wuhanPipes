@@ -6,7 +6,7 @@ import json
 
 from numpy import integer, floating, ndarray
 from pandas import Series
-from pandas import Timestamp
+from pymysql import Timestamp
 import pandas as pd
 
 class NpEncoder(json.JSONEncoder):

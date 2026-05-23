@@ -542,9 +542,6 @@ class T11002(Transformer):
             "total_asset_turnover_T":"",# T年总资产周转天数
             "total_asset_turnover_T1": "",  # T1年总资产周转天数
             "total_asset_turnover_T2": "",  # T2年总资产周转天数
-            "current_asset_turnover_T":"", # T年流动资产周转天数
-            "current_asset_turnover_T1": "",  # T1年流动资产周转天数
-            "current_asset_turnover_T2": "",  # T2年流动资产周转天数
 
 
             # 数字纠偏

@@ -60,103 +60,22 @@ def translate_for_strategy(product_code, codes, user_name=None, id_card_no=None,
     return variables, out_decision_code
 
 
-# def get_transformer(code, product_code=None) -> Transformer:
-#     """
-#     根据code构建对应的转换对象
-#     :param product_code:
-#     :param code:
-#     :return:
-#     """
-#     try:
-#         model = None
-#         if product_code:
-#             model = importlib.import_module("mapping.p" + product_code + ".t" + str(code))
-#         else:
-#             model = importlib.import_module("mapping.t" + str(code))
-#         api_class = getattr(model, "T" + str(code))
-#         api_instance = api_class()
-#         return api_instance
-#     except ModuleNotFoundError as err:
-#         logger.error(str(err))
-#         return Transformer()
-
-
-def get_transformer(code: str, product_code: str = None) -> Transformer:
+def get_transformer(code, product_code=None) -> Transformer:
     """
-    根据code和product_code构建对应的转换对象
-
-    逻辑：
-    1. 如果提供了product_code，尝试导入 mapping.p{product_code}.t{code}
-    2. 如果失败或未提供product_code，尝试导入 mapping.t{code}
-    3. 如果都失败，返回默认Transformer
-
-    注意：p{product_code}目录下可能没有对应的t{code}.py文件
-
-    :param code: 转换器代码，如 "11002", "11003"
-    :param product_code: 产品代码，如 "11002"。为None时使用通用转换器
-    :return: Transformer实例
+    根据code构建对应的转换对象
+    :param product_code:
+    :param code:
+    :return:
     """
-    # 记录尝试的模块路径
-    attempted_modules = []
-
-    # 情况1：有product_code参数
-    if product_code:
-        try:
-            # 先尝试产品特定的转换器：mapping.p11002.t11002
-            module_name = f"mapping.p{product_code}.t{code}"
-            attempted_modules.append(module_name)
-
-            logger.debug(f"尝试导入产品特定转换器: {module_name}")
-            model = importlib.import_module(module_name)
-
-            # 获取对应的类
-            class_name = f"T{code}"
-            if hasattr(model, class_name):
-                api_class = getattr(model, class_name)
-                logger.info(f"✓ 成功加载产品{product_code}的转换器: {class_name}")
-                return api_class()
-            else:
-                logger.warning(f"模块 {module_name} 中未找到类 {class_name}")
-
-        except ModuleNotFoundError as err:
-            logger.debug(f"产品特定转换器不存在: {err}")
-            # 这是正常情况，继续尝试通用转换器
-
-        except Exception as e:
-            logger.error(f"导入产品特定转换器时出错: {e}")
-            # 继续尝试通用转换器
-
-    # 情况2：尝试通用转换器或作为备选
     try:
-        # 尝试通用转换器：mapping.t11002
-        module_name = f"mapping.t{code}"
-        attempted_modules.append(module_name)
-
-        logger.debug(f"尝试导入通用转换器: {module_name}")
-        model = importlib.import_module(module_name)
-
-        # 获取对应的类
-        class_name = f"T{code}"
-        if hasattr(model, class_name):
-            api_class = getattr(model, class_name)
-
-            if product_code:
-                logger.info(f"✓ 使用通用转换器 {code} (产品{product_code}的特定转换器不存在)")
-            else:
-                logger.debug(f"✓ 成功加载通用转换器: {class_name}")
-
-            return api_class()
+        model = None
+        if product_code:
+            model = importlib.import_module("mapping.p" + product_code + ".t" + str(code))
         else:
-            logger.error(f"通用转换器模块 {module_name} 中未找到类 {class_name}")
-
+            model = importlib.import_module("mapping.t" + str(code))
+        api_class = getattr(model, "T" + str(code))
+        api_instance = api_class()
+        return api_instance
     except ModuleNotFoundError as err:
-        logger.error(f"通用转换器不存在: {err}")
-    except Exception as e:
-        logger.error(f"导入通用转换器时出错: {e}")
-
-    # 情况3：所有尝试都失败
-    logger.warning(f"使用默认转换器，未找到合适的转换器")
-    logger.debug(f"尝试过的模块路径: {attempted_modules}")
-    logger.debug(f"参数: code={code}, product_code={product_code}")
-
-    return Transformer()
+        logger.error(str(err))
+        return Transformer()

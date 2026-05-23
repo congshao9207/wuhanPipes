@@ -1,8 +1,6 @@
 import pandas as pd
 
 from mapping.module_processor import ModuleProcessor
-from logger.logger_util import LoggerUtil
-logger = LoggerUtil().logger(__name__)
 
 '''
 通用报表映射
@@ -155,7 +153,7 @@ class IndexMappingProcess(ModuleProcessor):
     def asset_dept_mapping(self):
         df_dict=self.cached_data.get('ASSET_DEBT')
 
-        if df_dict is None or len(df_dict)==0:
+        if len(df_dict)==0:
             return
 
         # self.cached_data['total_assets']=df_t.loc[df_t['资产']=='资产合计','期末余额']
@@ -167,10 +165,8 @@ class IndexMappingProcess(ModuleProcessor):
             start_date=str(int(end_date_t[:4])-1)
             self.variables['asset_dept_T'] =str(end_date_t[:4])+'年'+end_date_t[5:7]+'月'
             self.variables['asset_dept_T1'] = str(int(end_date_t[:4])-1)+'年'
-            if '期末余额' in list(df_t.columns):
-                self.mapping(self.asset_dept_mapping_dict, df_t, '资产', '期末余额', 'T')
-            if '期初余额' in list(df_t.columns):
-                self.mapping(self.asset_dept_mapping_dict, df_t, '资产', '期初余额', 'T1')
+            self.mapping(self.asset_dept_mapping_dict, df_t, '资产', '期末余额', 'T')
+            self.mapping(self.asset_dept_mapping_dict, df_t, '资产', '期初余额', 'T1')
 
         # T-1年数据映射
         df_t1=df_dict.get("df_t1")
@@ -179,8 +175,7 @@ class IndexMappingProcess(ModuleProcessor):
             start_date = str(int(end_date_t1[:4]) - 1)
             self.variables['asset_dept_T1'] = end_date_t1[:4]+'年'
             self.variables['asset_dept_T2'] = str(int(end_date_t1[:4]) - 1)+'年'
-            if '期初余额' in list(df_t1.columns):
-                self.mapping(self.asset_dept_mapping_dict, df_t1, '资产', '期初余额', 'T2')
+            self.mapping(self.asset_dept_mapping_dict, df_t1, '资产', '期初余额', 'T2')
 
         else:
             # T-2年数据映射
@@ -189,8 +184,7 @@ class IndexMappingProcess(ModuleProcessor):
             if df_t2 is not None:
                 start_date = str(int(end_date_t2[:4]) - 1)
                 self.variables['asset_dept_T2'] = end_date_t2[:4]+'年'
-                if '期末余额' in list(df_t2.columns):
-                    self.mapping(self.asset_dept_mapping_dict, df_t2, '资产', '期末余额', 'T2')
+                self.mapping(self.asset_dept_mapping_dict, df_t2, '资产', '期末余额', 'T2')
 
         self.variables['asset_dept_date_range'] = start_date + '年01月01日—' + end_date[:4]+'年'+end_date[5:7]+'月'+end_date[8:]+'日'
 
@@ -200,7 +194,7 @@ class IndexMappingProcess(ModuleProcessor):
         end_date=''
         df_dict = self.cached_data.get(table_type)
 
-        if df_dict is None or len(df_dict)==0:
+        if len(df_dict)==0:
             return
         df_t = df_dict.get("df_t")
         end_date_t= df_dict.get("end_date_t")
@@ -306,28 +300,22 @@ class IndexMappingProcess(ModuleProcessor):
         #财务标签
         df_finance_label = self.cached_data['finance_label']
         for key, value in finance_mapping_dict.items():
-            # 判断是否有多列table_column_value_name
-            target_cols = [col for col in df_t.columns if table_column_value_name in str(col)]
-            if len(target_cols)>1:
-                logger.error(f"映射{year}年数据存在重复列: {table_column_value_name}")
-                break
             ending_balance = df_t.loc[df_t[table_column_name] == key, table_column_value_name]
-            if len(ending_balance) == 1 and pd.isna(list(ending_balance)[0]) == False:
-                self.variables[value + '_' + year] = list(ending_balance)[0]
+            if len(ending_balance) == 1 and pd.isna(list(ending_balance)[0])==False:
+                self.variables[value + '_'+year] = list(ending_balance)[0]
             elif len(ending_balance) > 1:
                 # 判断是否都为字符串
                 if all(isinstance(item, str) for item in list(ending_balance)):
                     continue
                 else:
-                    need_sum = df_finance_label.loc[df_finance_label['label_definition'] == key, 'need_sum'].to_list()[
-                        0]
-                    # 判断是映射标签是否需要求和
-                    if need_sum == 1:
+                    need_sum=df_finance_label.loc[df_finance_label['label_definition']==key,'need_sum'].to_list()[0]
+                    #判断是映射标签是否需要求和
+                    if need_sum==1:
                         ending_balance_value = sum([float(k) if k != '' else 0 for k in list(ending_balance)])
-                        self.variables[value + '_' + year] = 0 if ending_balance_value == 0 else ending_balance_value
+                        self.variables[value + '_'+year] = 0 if ending_balance_value == 0 else ending_balance_value
                     else:
                         for val in list(ending_balance):
-                            if isinstance(val, (float, int)):
+                            if isinstance(val, (float,int)):
                                 self.variables[value + '_' + year] = val
                                 break
             else:

@@ -1,3 +1,4 @@
+# @Time : 12/11/20 10:12 AM 
 # @Author : lixiaobo
 # @File : micro_loan_flowable.py 
 # @Software: PyCharm
@@ -155,8 +156,6 @@ class MicroLoanFlow(object):
             sp_name = None
             if query_data is not None:
                 for queryer in query_data:
-                    if queryer is None:
-                        continue
                     if queryer.get('userType') == 'COMPANY':
                         ent_code.append(queryer.get('idno'))
                     if queryer.get('baseType') == 'U_PERSONAL':
@@ -164,7 +163,7 @@ class MicroLoanFlow(object):
                     if queryer.get('baseType') == 'U_PER_SP_PERSONAL':
                         sp_name = queryer.get('name')
             opera_year = self.operation_year(ent_code, main_name, sp_name)
-            variables["opera_year"] = round(opera_year, 2)
+            variables["opera_year"] = round(opera_year,2)
         origin_input["tracking_" + variables["segment_name"]] = 1
         origin_input.update(variables)
         origin_input['channel_source'] = channel_source

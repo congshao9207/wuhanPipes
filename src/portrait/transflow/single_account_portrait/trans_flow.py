@@ -170,7 +170,7 @@ class TransFlowBasic:
         # 重新打relationship标签
         self._relationship_dict()
         for i, v in self.relation_dict.items():
-            df.loc[df['opponent_name'].astype(str).str.contains(i, regex=False), 'relationship'] = v
+            df.loc[df['opponent_name'].astype(str).str.contains(i), 'relationship'] = v
         # 将码值映射成文字
         df['label1'] = df['mutual_exclusion_label'].map(self.label_tree)
         # df['uni_type'] = df['mutual_exclusion_label'].apply(lambda x: x[4:8])
@@ -229,7 +229,7 @@ class TransFlowBasic:
         # 重新打relationship标签
         self._relationship_dict()
         for i, v in self.relation_dict.items():
-            df.loc[df['opponent_name'].astype(str).str.contains(i, regex=False), 'relationship'] = v
+            df.loc[df['opponent_name'].astype(str).str.contains(i), 'relationship'] = v
         # 将码值映射成文字
         df['label1'] = df['mutual_exclusion_label'].map(self.label_tree)
         # df['uni_type'] = df['mutual_exclusion_label'].apply(lambda x: x[4:8])

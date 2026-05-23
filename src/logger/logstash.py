@@ -9,8 +9,11 @@ from datetime import date, datetime
 import logstash_async
 from logstash_async.constants import constants
 from six import integer_types, string_types
-import json
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 
 class LogstashFormatter(logging.Formatter):

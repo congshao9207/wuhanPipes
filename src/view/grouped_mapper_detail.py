@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import traceback
 
 from exceptions import ServerException
@@ -26,10 +27,7 @@ def view_variables_scheduler(product_code, full_msg=None, user_name=None, id_car
         view_transformers = get_product_transformers(product_code, True)
         if view_transformers and len(view_transformers) > 0:
             filtered_view_trans = filter(lambda x: x.invoke_style() & invoke_style > 0, view_transformers)
-            filtered_view_trans = filtered_view_trans if filtered_view_trans else []
             for product_view_tran in filtered_view_trans:
-                if product_view_tran is None:
-                    continue
                 logger.info("product_view_tran begin :%s", str(product_view_tran))
                 product_view_tran.full_msg = full_msg
                 trans_result = product_view_tran.run(user_name=user_name,
@@ -39,7 +37,6 @@ def view_variables_scheduler(product_code, full_msg=None, user_name=None, id_car
                                                      base_type=base_type,
                                                      origin_data=origin_data,
                                                      cached_data=cached_data)
-                trans_result = trans_result if trans_result else {}
                 logger.info("product_view_tran end :%s", str(product_view_tran))
                 group_name = product_view_tran.group_name()
                 variables[group_name] = trans_result['variables']

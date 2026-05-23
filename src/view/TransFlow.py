@@ -3,6 +3,7 @@ from util.mysql_reader import sql_to_df
 from pandas.tseries import offsets
 from fileparser.trans_flow.trans_config import *
 import pandas as pd
+import numpy as np
 import re
 
 
@@ -34,6 +35,29 @@ class TransFlow(ModuleProcessor):
 
     def init(self, variables, user_name, id_card_no, origin_data, cached_data):
         super().init(variables, user_name, id_card_no, origin_data, cached_data)
+
+        # 如果已经初始化过，直接从缓存恢复所有实例变量（避免 17 个 View 重复执行）
+        if '_trans_flow_initialized' in self.cached_data:
+            self.cusName = self.cached_data['_cusName']
+            self.bankName = self.cached_data['_bankName']
+            self.bankAccount = self.cached_data['_bankAccount']
+            self.idno = self.cached_data['_idno']
+            self.reqno = self.cached_data['_reqno']
+            self.appAmt = self.cached_data['_appAmt']
+            self.account_id = self.cached_data['_account_id']
+            self.file_ids = self.cached_data['_file_ids'].copy()
+            self.file_df = self.cached_data['_file_df'].copy() if not self.cached_data['_file_df'].empty else pd.DataFrame()
+            self.file_status = self.cached_data['_file_status']
+            self.guarantor_list = self.cached_data['_guarantor_list'].copy()
+            self.relation_dict = self.cached_data['_relation_dict'].copy()
+            self.trans_u_flow_portrait = self.cached_data['_trans_u_flow_portrait'].copy() if self.cached_data['_trans_u_flow_portrait'] is not None else None
+            self.mtr_trans_flow_portrait = self.cached_data['_mtr_trans_flow_portrait'].copy() if self.cached_data['_mtr_trans_flow_portrait'] is not None else None
+            self.main_indu = self.cached_data['_main_indu']
+            self.main_indu_name = self.cached_data['_main_indu_name']
+            self.main_ent = self.cached_data['_main_ent'].copy()
+            self.indu_flow = self.cached_data['_indu_flow'].copy() if self.cached_data['_indu_flow'] is not None else None
+            self.previous_out_apply_no = self.cached_data['_previous_out_apply_no']
+            return
         guarantor_temp = []
         ent_list = []
         for i in self.cached_data.get("input_param"):
@@ -129,7 +153,98 @@ class TransFlow(ModuleProcessor):
             self.mtr_trans_flow_portrait = self.mtr_trans_flow_portrait[
                 self.mtr_trans_flow_portrait['trans_time'] >= max_time - offsets.DateOffset(months=12)]
 
+        # 初始化完成后，将所有结果缓存到 cached_data（后续 View 直接复用）
+        self.cached_data['_trans_flow_initialized'] = True
+        self.cached_data['_cusName'] = self.cusName
+        self.cached_data['_bankName'] = self.bankName
+        self.cached_data['_bankAccount'] = self.bankAccount
+        self.cached_data['_idno'] = self.idno
+        self.cached_data['_reqno'] = self.reqno
+        self.cached_data['_appAmt'] = self.appAmt
+        self.cached_data['_account_id'] = self.account_id
+        self.cached_data['_file_ids'] = self.file_ids
+        self.cached_data['_file_df'] = self.file_df
+        self.cached_data['_file_status'] = self.file_status
+        self.cached_data['_guarantor_list'] = self.guarantor_list
+        self.cached_data['_relation_dict'] = self.relation_dict
+        self.cached_data['_trans_u_flow_portrait'] = self.trans_u_flow_portrait
+        self.cached_data['_mtr_trans_flow_portrait'] = self.mtr_trans_flow_portrait
+        self.cached_data['_main_indu'] = self.main_indu
+        self.cached_data['_main_indu_name'] = self.main_indu_name
+        self.cached_data['_main_ent'] = self.main_ent
+        self.cached_data['_indu_flow'] = self.indu_flow
+        self.cached_data['_previous_out_apply_no'] = self.previous_out_apply_no
+
+    # def get_trans_u_flow_portrait(self, no_filter=False):
+    #     input_param = self.cached_data.get("input_param")
+    #     fileids_list = []
+    #     for i in input_param:
+    #         fileids_list.extend(i["extraParam"]['fileIds'])
+    #
+    #     acc_sql = '''
+    #             select id as account_id, out_req_no, file_id, trans_flow_src_type, bank, account_no, id_card_no as idno
+    #             from trans_account
+    #             where file_id in %(fileids_list)s
+    #         '''
+    #     acc_df = sql_to_df(sql=acc_sql, params={"fileids_list": fileids_list})
+    #     out_req_no_list = acc_df['out_req_no'].tolist()
+    #     flow_sql = "select * from trans_report_flow where out_req_no in (%s)" % ('"' + '","'.join(out_req_no_list) + '"')
+    #     flow_df = sql_to_df(sql=flow_sql)
+    #     df = pd.merge(flow_df, acc_df, how='left', on='out_req_no')
+    #
+    #     if df.shape[0] == 0:
+    #         return
+    #     # 重新打relationship标签
+    #     for i, v in self.relation_dict.items():
+    #         df.loc[df['opponent_name'].astype(str).str.contains(i, regex=False), 'relationship'] = v
+    #     # 将码值映射成文字
+    #     label_sql = "select label_code, label_explanation from label_logic where label_type = 'LABEL'"
+    #     label_df = sql_to_df(label_sql)
+    #     res = {getattr(row, 'label_code'): getattr(row, 'label_explanation') for row in label_df.itertuples()}
+    #
+    #     # 成本支出项 水电、工资、保险、税费
+    #     cost_lab_dict = {'0102010411': '水电', '0102010201': '工资', '0102010402': '保险',
+    #                      '0102010301': '税费', '0102010302': '税费', '0102010303': '税费', '0102010304': '税费'}
+    #     df['mutual_exclusion_label'] = df['mutual_exclusion_label'].fillna('')
+    #     df['cost_type'] = df['mutual_exclusion_label'].map(lambda x: cost_lab_dict[x] if x in cost_lab_dict.keys() else '')
+    #     df['remark_type'] = ''
+    #     df['trans_time'] = pd.to_datetime(df['trans_time'])
+    #     df['trans_date'] = df['trans_time'].apply(lambda x: x.date())
+    #     df['label1'] = df['mutual_exclusion_label'].map(res)
+    #     # df['uni_type'] = df['mutual_exclusion_label'].apply(lambda x: x[4:8])
+    #     df['uni_type'] = df['mutual_exclusion_label'].str[4:8]
+    #     df['usual_trans_type'] = df['compatibility_label'].apply(
+    #         lambda x: ','.join([str(res.get(y)) for y in x.split(',')]) if pd.notna(x) else '')
+    #     df['unusual_trans_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0203' else None, axis=1)
+    #     df['loan_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0202' else None, axis=1)
+    #     df['is_sensitive'] = df.apply(
+    #         lambda x: 1 if pd.notna(x['unusual_trans_type']) or pd.notna(x['loan_type']) else None, axis=1)
+    #     df['opponent_type'] = df['opponent_name'].fillna('').astype(str).apply(self._opponent_type)
+    #     df['trans_flow_src_type'] = df['trans_flow_src_type'].apply(lambda x: 1 if x in [2, 3] else 0)
+    #     df = self._in_out_order(df)
+    #     df = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
+    #     if not no_filter and df.shape[0] > 0:
+    #         df = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
+    #     self.trans_u_flow_portrait = df if df.shape[0] > 0 else None
+    #     self.indu_flow = df[df['idno'].isin(self.main_ent)]
+
     def get_trans_u_flow_portrait(self, no_filter=False):
+        # 缓存键：trans_u_flow 已加载完成的数据（含内部12个月筛选）
+        _cache_key = '_cached_trans_u_flow'
+        if _cache_key in self.cached_data:
+            cached = self.cached_data[_cache_key]
+            # 校验缓存数据包含 TransFlow 所需的全部关键列（idno/bank/account_no），
+            # 避免 TransModuleProcessor 缓存的不完整数据被误用
+            if cached is not None and 'idno' in cached.columns:
+                self.trans_u_flow_portrait = cached.copy()
+                if self.trans_u_flow_portrait.shape[0] > 0:
+                    self.indu_flow = self.trans_u_flow_portrait[self.trans_u_flow_portrait['idno'].isin(self.main_ent)]
+                else:
+                    self.indu_flow = pd.DataFrame()
+                return
+            elif cached is None:
+                return
+
         input_param = self.cached_data.get("input_param")
         fileids_list = []
         for i in input_param:
@@ -137,24 +252,34 @@ class TransFlow(ModuleProcessor):
 
         acc_sql = '''
                 select id as account_id, out_req_no, file_id, trans_flow_src_type, bank, account_no, id_card_no as idno
-                from trans_account 
+                from trans_account
                 where file_id in %(fileids_list)s
             '''
         acc_df = sql_to_df(sql=acc_sql, params={"fileids_list": fileids_list})
         out_req_no_list = acc_df['out_req_no'].tolist()
+        if not out_req_no_list:
+            self.cached_data[_cache_key] = None
+            return
         flow_sql = "select * from trans_report_flow where out_req_no in (%s)" % ('"' + '","'.join(out_req_no_list) + '"')
         flow_df = sql_to_df(sql=flow_sql)
         df = pd.merge(flow_df, acc_df, how='left', on='out_req_no')
 
         if df.shape[0] == 0:
+            self.cached_data[_cache_key] = None
             return
         # 重新打relationship标签
         for i, v in self.relation_dict.items():
             df.loc[df['opponent_name'].astype(str).str.contains(i, regex=False), 'relationship'] = v
-        # 将码值映射成文字
-        label_sql = "select label_code, label_explanation from label_logic where label_type = 'LABEL'"
-        label_df = sql_to_df(label_sql)
-        res = {getattr(row, 'label_code'): getattr(row, 'label_explanation') for row in label_df.itertuples()}
+        # P0: label_logic 全局缓存（避免 17+ 次重复查询）
+        if '_label_dict' not in self.cached_data:
+            # ---- 原有的 label_logic 查询逻辑 ----
+            # label_sql = "select label_code, label_explanation from label_logic where label_type = 'LABEL'"
+            # label_df = sql_to_df(label_sql)
+            # res = {getattr(row, 'label_code'): getattr(row, 'label_explanation') for row in label_df.itertuples()}
+            label_sql = "select label_code, label_explanation from label_logic where label_type = 'LABEL'"
+            label_df = sql_to_df(label_sql)
+            self.cached_data['_label_dict'] = {getattr(row, 'label_code'): getattr(row, 'label_explanation') for row in label_df.itertuples()}
+        res = self.cached_data['_label_dict']
 
         # 成本支出项 水电、工资、保险、税费
         cost_lab_dict = {'0102010411': '水电', '0102010201': '工资', '0102010402': '保险',
@@ -169,24 +294,67 @@ class TransFlow(ModuleProcessor):
         df['uni_type'] = df['mutual_exclusion_label'].str[4:8]
         df['usual_trans_type'] = df['compatibility_label'].apply(
             lambda x: ','.join([str(res.get(y)) for y in x.split(',')]) if pd.notna(x) else '')
-        df['unusual_trans_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0203' else None, axis=1)
-        df['loan_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0202' else None, axis=1)
-        df['is_sensitive'] = df.apply(
-            lambda x: 1 if pd.notna(x['unusual_trans_type']) or pd.notna(x['loan_type']) else None, axis=1)
+        # df['unusual_trans_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0203' else None, axis=1)
+        # df['loan_type'] = df.apply(lambda x: x['label1'] if x['uni_type'] == '0202' else None, axis=1)
+        # df['is_sensitive'] = df.apply(
+        #     lambda x: 1 if pd.notna(x['unusual_trans_type']) or pd.notna(x['loan_type']) else None, axis=1)
+        df['unusual_trans_type'] = np.where(df['uni_type'] == '0203', df['label1'], None)
+        df['loan_type'] = np.where(df['uni_type'] == '0202', df['label1'], None)
+        df['is_sensitive'] = np.where(
+            df['unusual_trans_type'].notna() | df['loan_type'].notna(), 1, None)
         df['opponent_type'] = df['opponent_name'].fillna('').astype(str).apply(self._opponent_type)
         df['trans_flow_src_type'] = df['trans_flow_src_type'].apply(lambda x: 1 if x in [2, 3] else 0)
         df = self._in_out_order(df)
         df = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
         if not no_filter and df.shape[0] > 0:
             df = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
-        self.trans_u_flow_portrait = df if df.shape[0] > 0 else None
+        result = df if df.shape[0] > 0 else None
+        self.trans_u_flow_portrait = result
         self.indu_flow = df[df['idno'].isin(self.main_ent)]
+        # 存入缓存（用 copy 避免后续修改污染缓存）
+        self.cached_data[_cache_key] = result.copy() if result is not None else None
+
+    # def get_mtr_trans_flow_portrait(self, no_filter=False):
+    #     """
+    #     收单流水处理
+    #     :return:
+    #     """
+    #     input_param = self.cached_data.get("input_param")
+    #     fileids_list = []
+    #     for i in input_param:
+    #         fileids_list.extend(i["extraParam"]['fileIds'])
+    #
+    #     acc_sql = '''
+    #             select id as account_id, out_req_no, file_id, trans_flow_src_type, bank, account_no
+    #             from trans_account
+    #             where file_id in %(fileids_list)s
+    #         '''
+    #     acc_df = sql_to_df(sql=acc_sql, params={"fileids_list": fileids_list})
+    #     out_req_no_list = acc_df['out_req_no'].tolist()
+    #     flow_sql = "select * from mtr_trans_flow where out_req_no in (%s)" % ('"' + '","'.join(out_req_no_list) + '"')
+    #     flow_df = sql_to_df(sql=flow_sql)
+    #     df = pd.merge(flow_df, acc_df, how='left', on='out_req_no')
+    #
+    #     if df.shape[0] == 0:
+    #         return
+    #
+    #     df['trans_status_label'] = df['trans_status'].fillna('').str.contains('退货|取消|部分退|合单|作废').astype(int)
+    #     if not no_filter and df.shape[0] > 0:
+    #         self.mtr_trans_flow_portrait = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
+    #
+    #     self.mtr_trans_flow_portrait = df if df.shape[0] > 0 else None
 
     def get_mtr_trans_flow_portrait(self, no_filter=False):
         """
         收单流水处理
         :return:
         """
+        # 缓存键
+        _cache_key = '_cached_mtr_trans_flow'
+        if _cache_key in self.cached_data:
+            self.mtr_trans_flow_portrait = self.cached_data[_cache_key].copy() if self.cached_data[_cache_key] is not None else None
+            return
+
         input_param = self.cached_data.get("input_param")
         fileids_list = []
         for i in input_param:
@@ -194,23 +362,29 @@ class TransFlow(ModuleProcessor):
 
         acc_sql = '''
                 select id as account_id, out_req_no, file_id, trans_flow_src_type, bank, account_no
-                from trans_account 
+                from trans_account
                 where file_id in %(fileids_list)s
             '''
         acc_df = sql_to_df(sql=acc_sql, params={"fileids_list": fileids_list})
         out_req_no_list = acc_df['out_req_no'].tolist()
+        if not out_req_no_list:
+            self.cached_data[_cache_key] = None
+            return
         flow_sql = "select * from mtr_trans_flow where out_req_no in (%s)" % ('"' + '","'.join(out_req_no_list) + '"')
         flow_df = sql_to_df(sql=flow_sql)
         df = pd.merge(flow_df, acc_df, how='left', on='out_req_no')
 
         if df.shape[0] == 0:
+            self.cached_data[_cache_key] = None
             return
 
         df['trans_status_label'] = df['trans_status'].fillna('').str.contains('退货|取消|部分退|合单|作废').astype(int)
         if not no_filter and df.shape[0] > 0:
             self.mtr_trans_flow_portrait = df[df['trans_time'] >= df['trans_time'].max() - offsets.DateOffset(months=12)]
 
-        self.mtr_trans_flow_portrait = df if df.shape[0] > 0 else None
+        result = df if df.shape[0] > 0 else None
+        self.mtr_trans_flow_portrait = result
+        self.cached_data[_cache_key] = result.copy() if result is not None else None
 
     def _get_global_max_time(self):
         """获取全局最大时间"""
@@ -280,22 +454,49 @@ class TransFlow(ModuleProcessor):
             sort_values(by='trans_amt', ascending=False).index.tolist()[:20]
         expense_com_amt_list = expense_com_df.groupby(by='opponent_name').agg({'trans_amt': sum}). \
             sort_values(by='trans_amt', ascending=True).index.tolist()[:20]
-        for i in range(len(income_per_cnt_list)):
-            df.loc[df['opponent_name'] == income_per_cnt_list[i], 'income_cnt_order'] = i + 1
-        for i in range(len(income_com_cnt_list)):
-            df.loc[df['opponent_name'] == income_com_cnt_list[i], 'income_cnt_order'] = i + 1
-        for i in range(len(expense_per_cnt_list)):
-            df.loc[df['opponent_name'] == expense_per_cnt_list[i], 'expense_cnt_order'] = i + 1
-        for i in range(len(expense_com_cnt_list)):
-            df.loc[df['opponent_name'] == expense_com_cnt_list[i], 'expense_cnt_order'] = i + 1
-        for i in range(len(income_per_amt_list)):
-            df.loc[df['opponent_name'] == income_per_amt_list[i], 'income_amt_order'] = i + 1
-        for i in range(len(income_com_amt_list)):
-            df.loc[df['opponent_name'] == income_com_amt_list[i], 'income_amt_order'] = i + 1
-        for i in range(len(expense_per_amt_list)):
-            df.loc[df['opponent_name'] == expense_per_amt_list[i], 'expense_amt_order'] = i + 1
-        for i in range(len(expense_com_amt_list)):
-            df.loc[df['opponent_name'] == expense_com_amt_list[i], 'expense_amt_order'] = i + 1
+
+        # # 原方式：8个循环，共160次全表扫描
+        # for i in range(len(income_per_cnt_list)):
+        #     df.loc[df['opponent_name'] == income_per_cnt_list[i], 'income_cnt_order'] = i + 1
+        # for i in range(len(income_com_cnt_list)):
+        #     df.loc[df['opponent_name'] == income_com_cnt_list[i], 'income_cnt_order'] = i + 1
+        # for i in range(len(expense_per_cnt_list)):
+        #     df.loc[df['opponent_name'] == expense_per_cnt_list[i], 'expense_cnt_order'] = i + 1
+        # for i in range(len(expense_com_cnt_list)):
+        #     df.loc[df['opponent_name'] == expense_com_cnt_list[i], 'expense_cnt_order'] = i + 1
+        # for i in range(len(income_per_amt_list)):
+        #     df.loc[df['opponent_name'] == income_per_amt_list[i], 'income_amt_order'] = i + 1
+        # for i in range(len(income_com_amt_list)):
+        #     df.loc[df['opponent_name'] == income_com_amt_list[i], 'income_amt_order'] = i + 1
+        # for i in range(len(expense_per_amt_list)):
+        #     df.loc[df['opponent_name'] == expense_per_amt_list[i], 'expense_amt_order'] = i + 1
+        # for i in range(len(expense_com_amt_list)):
+        #     df.loc[df['opponent_name'] == expense_com_amt_list[i], 'expense_amt_order'] = i + 1
+
+        # 优化方式：将 8 个循环（共 160 次全表扫描）替换为 dict.map（O(1) 查找）
+        name_to_rank = {}
+        for i, name in enumerate(income_per_cnt_list):
+            name_to_rank[name] = ('income_cnt_order', i + 1)
+        for i, name in enumerate(income_com_cnt_list):
+            name_to_rank[name] = ('income_cnt_order', i + 1)
+        for i, name in enumerate(expense_per_cnt_list):
+            name_to_rank[name] = ('expense_cnt_order', i + 1)
+        for i, name in enumerate(expense_com_cnt_list):
+            name_to_rank[name] = ('expense_cnt_order', i + 1)
+        for i, name in enumerate(income_per_amt_list):
+            name_to_rank[name] = ('income_amt_order', i + 1)
+        for i, name in enumerate(income_com_amt_list):
+            name_to_rank[name] = ('income_amt_order', i + 1)
+        for i, name in enumerate(expense_per_amt_list):
+            name_to_rank[name] = ('expense_amt_order', i + 1)
+        for i, name in enumerate(expense_com_amt_list):
+            name_to_rank[name] = ('expense_amt_order', i + 1)
+
+        for col_name in ['income_cnt_order', 'income_amt_order', 'expense_cnt_order', 'expense_amt_order']:
+            col_rank_map = {k: v for k, (c, v) in name_to_rank.items() if c == col_name}
+            if col_rank_map:
+                df[col_name] = df['opponent_name'].map(col_rank_map)
+
         return df
 
     @staticmethod

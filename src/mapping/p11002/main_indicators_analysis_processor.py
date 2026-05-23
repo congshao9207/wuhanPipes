@@ -123,8 +123,8 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
         '''
         neeq_df=sql_to_df(sql,params={"report_date":report_date,"industry":industry})
         if neeq_df.shape[0]>0:
-            mean_dict=self._cal_main_indicators(neeq_df)
-            # self.variables['neeq_data'] = mean_dict
+            mena_dict=self._cal_main_indicators(neeq_df)
+            # self.variables['neeq_data'] = mena_dict
 
     # A股数据，取最新一个年报的记录
     def a_share_financial_report(self,report_date,industry):
@@ -251,7 +251,7 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
                 }]
 
     def _cal_delta(self, a, b):
-        if a in self.variables and isinstance(self.variables[a], (float, int)) and pd.isna(b)==False:
+        if isinstance(self.variables[a], (float, int)) and pd.isna(b)==False:
             print("self.variables[a]:",a,self.variables[a])
             return self.empty_to_zero_enhanced(a) - b
         else:
@@ -273,11 +273,11 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
         self.profitability_multi_variable('net_profit', 'total_equity', 'ROE', T, T1)
 
     def profitability_variable(self,key1,key2,key3,T):
-        if key1+T in self.variables and key2+T in self.variables and isinstance(self.variables[key1+T],(float,int)) and isinstance(self.variables[key2+T],(float,int)) and self.variables[key2+T]!=0:
+        if isinstance(self.variables[key1+T],(float,int)) and isinstance(self.variables[key2+T],(float,int)) and self.variables[key2+T]!=0:
             self.variables[key3+T]=self.variables[key1+T]/self.variables[key2+T]
 
     def profitability_multi_variable(self,key1, key2, key3, T, T1):
-        if key1+T in self.variables and key2+T in self.variables and isinstance(self.variables[key1 + T], (float, int)) and isinstance(self.variables[key2 + T],(float, int)) and isinstance(self.variables[key2 + T1], (float, int)) and (self.variables[key2 + T] + self.variables[key2 + T1]) != 0:
+        if isinstance(self.variables[key1 + T], (float, int)) and isinstance(self.variables[key2 + T],(float, int)) and isinstance(self.variables[key2 + T1], (float, int)) and (self.variables[key2 + T] + self.variables[key2 + T1]) != 0:
             self.variables[key3 + T] = self.variables[key1 + T] / ((self.variables[key2+ T] + self.variables[key2 + T1]) / 2)
 
     #营运能力
@@ -310,8 +310,7 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
             # 流动资产周转天数
             self.operation_capacity_variables('revenue', 'total_current', 'current_asset_turnover', T, T1)
             # 流动资产周转率=营业收入 / 平均流动资产合计
-            if 'current_asset_turnover'+T in self.variables:
-                self.variables['current_asset_turnover_ratio'+T]=360/self.empty_to_zero_enhanced('current_asset_turnover'+T) if self.empty_to_zero_enhanced('current_asset_turnover'+T)>0 else None
+            self.variables['current_asset_turnover_ratio'+T]=360/self.empty_to_zero_enhanced('current_asset_turnover'+T) if self.empty_to_zero_enhanced('current_asset_turnover'+T)>0 else None
 
             # 长期偿债能力：
             # 利息保障倍数=平均（净利润 + 所得税费用 + 利息费用）/平均利息费用
@@ -325,11 +324,7 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
 
 
     def operation_capacity_variables(self,key1, key2, key3, T, T1):
-        if key1 + T in self.variables and key2 + T in self.variables and key2 + T1 in self.variables \
-                and  isinstance(self.variables[key1 + T], (float, int)) \
-                and isinstance(self.variables[key2 + T],(float, int)) \
-                and isinstance(self.variables[key2 + T1], (float, int)) \
-                and self.variables[key1 + T] !=0 and (self.variables[key2 + T] + self.variables[key2 + T1]) != 0:
+        if isinstance(self.variables[key1 + T], (float, int)) and isinstance(self.variables[key2 + T],(float, int)) and isinstance(self.variables[key2 + T1], (float, int)) and (self.variables[key2 + T] + self.variables[key2 + T1]) != 0:
             self.variables[key3 + T] = 360 / (self.variables[key1 + T] / ((self.variables[key2+ T] + self.variables[key2 + T1]) / 2))
 
 
@@ -469,6 +464,6 @@ class MainIndicatorsAnalysisProcessor(ModuleProcessor):
             返回:
                 如果是空字符串""、None或空序列则返回0，否则返回原数据
         '''
-        if var not in self.variables or self.variables[var] == "":
+        if self.variables[var] == "":
             return 0
         return float(self.variables[var])
