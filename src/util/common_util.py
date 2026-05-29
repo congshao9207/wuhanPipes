@@ -100,25 +100,24 @@ def get_all_related_company(msg):
                 #     per_type[base_type] = idno
     query_data_list = query_data_list if query_data_list else []
     for query_data in query_data_list:
-        if query_data is not None:
-            name = query_data.get("name")
-            idno = query_data.get("idno")
-            user_type = query_data.get("userType")
-            base_type = query_data.get("baseType")
-            strategy = query_data.get("extraParam")['strategy']
-            industry = query_data.get("extraParam")['industry']
-            temp_code = None
-            if user_type == 'COMPANY' and strategy == '01':
-                if 'SP' in base_type:
-                    temp_code = per_type.get('spouse')
-                if 'CT' in base_type and temp_code is None:
-                    temp_code = per_type.get('controller')
-                if temp_code is None:
-                    temp_code = per_type.get('main')
-                if temp_code is not None:
-                    resp[temp_code]['name'].append(name)
-                    resp[temp_code]['idno'].append(idno)
-                    resp[temp_code]['industry'].append(industry)
+        name = query_data.get("name")
+        idno = query_data.get("idno")
+        user_type = query_data.get("userType")
+        base_type = query_data.get("baseType")
+        strategy = query_data.get("extraParam")['strategy']
+        industry = query_data.get("extraParam")['industry']
+        temp_code = None
+        if user_type == 'COMPANY' and strategy == '01':
+            if 'SP' in base_type:
+                temp_code = per_type.get('spouse')
+            if 'CT' in base_type and temp_code is None:
+                temp_code = per_type.get('controller')
+            if temp_code is None:
+                temp_code = per_type.get('main')
+            if temp_code is not None:
+                resp[temp_code]['name'].append(name)
+                resp[temp_code]['idno'].append(idno)
+                resp[temp_code]['industry'].append(industry)
     return resp
 
 

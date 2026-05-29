@@ -1,3 +1,4 @@
+# @Time : 2020/4/24 9:48 AM 
 # @Author : lixiaobo
 # @File : data_prepared_processor.py 
 # @Software: PyCharm
@@ -146,10 +147,7 @@ class DataPreparedProcessor(ModuleProcessor):
         if query_data is None:
             self.cached_data['ent_code'] = ent_code
         else:
-            if query_data:
-                for data in query_data:
-                    if data is None:
-                        continue
-                    if data and data.get('userType') == 'COMPANY':
-                        ent_code.append(data.get('idno'))
-                self.cached_data['ent_code'] = ent_code
+            for data in query_data:
+                if data.get('userType') == 'COMPANY':
+                    ent_code.append(data.get('idno'))
+            self.cached_data['ent_code'] = ent_code
