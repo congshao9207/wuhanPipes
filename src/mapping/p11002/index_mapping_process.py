@@ -1,6 +1,8 @@
 import pandas as pd
 
 from mapping.module_processor import ModuleProcessor
+from logger.logger_util import LoggerUtil
+logger = LoggerUtil().logger(__name__)
 
 '''
 通用报表映射
