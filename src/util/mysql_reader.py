@@ -4,13 +4,17 @@ import re
 import pandas as pd
 from sqlalchemy import create_engine
 import logging
-from config import GEARS_DB
+from src.config import GEARS_DB
 
 #DB_URI = 'dm+dmPython://%(user)s:%(pw)s@%(host)s%(db_extra_param)s' % GEARS_DB
 DB_URI = 'dm+dmPython://%(user)s:%(pw)s@%(host)s:%(port)s?schema=%(db)s' % GEARS_DB
 # DB_URI = 'mysql+pymysql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % GEARS_DB
+#
+__DB_ENGINE = create_engine(DB_URI, pool_size=10, max_overflow=10, connect_args={
+        'schema': GEARS_DB.get('db'),  # 将 schema 移到这里
+        'local_code': 1  # 可以设置达梦的解码格式
+    })
 
-__DB_ENGINE = create_engine(DB_URI, pool_size=10, max_overflow=10)
 
 
 def quote_aliases(sql):

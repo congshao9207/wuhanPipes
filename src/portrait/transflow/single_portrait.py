@@ -40,6 +40,27 @@ class SinglePortrait(PortraitProcessor):
 
         # 2.将业务关联信息落库
         logger.info("-----------业务号%s正在%s------------" % (trans_flow.app_no, '进行业务关联信息落库'))
+        length = len(self.query_data_array)
+        for i in range(length):
+            temp = self.query_data_array[i]
+            if temp['extraParam'].__contains__("accounts") and not temp['extraParam']['accounts']:
+                if temp['extraParam'].__contains__('fileInfo') and temp['extraParam']['fileInfo'] is not None:
+                    self.query_data_array[i]['extraParam']['accounts'] = temp['extraParam']['fileInfo']
+
+        # for i in range(length):
+        #     temp = self.query_data_array[i]
+        #     if not temp['extraParam']['accounts']:
+        #         if temp['extraParam'].__contains__('fileIds') and temp['extraParam']['fileIds'] is not None and \
+        #                 len(temp['extraParam']['fileIds']) > 0:
+        #             fileids = temp['extraParam']['fileIds']
+        #             if not temp['extraParam']['accounts']:
+        #                 account_id_df = sql_to_df(
+        #                     "select id as account_id, account_no as bankAccount, bank as bankName from trans_account where file_id in %(fileids_list)s",
+        #                     params={"fileids_list": fileids})
+        #                 account_id_df.rename(columns={'bankaccount': 'bankAccount', 'bankname': 'bankName'},
+        #                                      inplace=True)
+        #                 self.query_data_array[i]['extraParam']['accounts'] = account_id_df.to_dict('records')
+        logger.info(self.query_data_array)
         trans_apply = TransApply(trans_flow)
         trans_apply.save_trans_apply_data()
         id_list = []

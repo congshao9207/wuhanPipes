@@ -44,6 +44,7 @@ def shake_hand():
     """
     try:
         json_data = request.get_json()
+        logger.info("shake_hand------start-------%s", json_data)
         product_code = json_data.get('productCode')
         handler = _get_product_handler(product_code)
         df_client = DefensorClient(request.headers)

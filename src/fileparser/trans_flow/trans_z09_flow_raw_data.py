@@ -66,17 +66,27 @@ class TransFlowRawData:
             if not_full_date_df.shape[0] == 0:
                 return full_date_df
             not_full_date_df1 = df[df['trans_date'].isin(not_full_date_list)]
-            for row in not_full_date_df.itertuples():
-                trans_date = getattr(row, 'trans_date')
-                trans_amt = getattr(row, 'trans_amt')
-                account_balance = getattr(row, 'account_balance')
-                opponent_name = getattr(row, 'opponent_name')
-                exist_df = not_full_date_df1[(not_full_date_df1['trans_amt'] == trans_amt) &
-                                             (not_full_date_df1['trans_date'] == trans_date) &
-                                             (not_full_date_df1['account_balance'] == account_balance) &
-                                             (not_full_date_df1['opponent_name'] == opponent_name)]
-                if exist_df.shape[0] > 0:
-                    not_full_date_df.drop(getattr(row, 'Index'), inplace=True)
+            ###############################################
+            # for row in not_full_date_df.itertuples():
+            #     trans_date = getattr(row, 'trans_date')
+            #     trans_amt = getattr(row, 'trans_amt')
+            #     account_balance = getattr(row, 'account_balance')
+            #     opponent_name = getattr(row, 'opponent_name')
+            #     exist_df = not_full_date_df1[(not_full_date_df1['trans_amt'] == trans_amt) &
+            #                                  (not_full_date_df1['trans_date'] == trans_date) &
+            #                                  (not_full_date_df1['account_balance'] == account_balance) &
+            #                                  (not_full_date_df1['opponent_name'] == opponent_name)]
+            #     if exist_df.shape[0] > 0:
+            #         not_full_date_df.drop(getattr(row, 'Index'), inplace=True)
+            ######################################################
+            # 将逐行迭代改为merge批量操作
+            merged = not_full_date_df.merge(
+                not_full_date_df1[['trans_amt', 'trans_date', 'account_balance', 'opponent_name']],
+                on=['trans_amt', 'trans_date', 'account_balance', 'opponent_name'],
+                how='left', indicator=True
+            )
+            duplicate_mask = merged['_merge'] == 'both'
+            not_full_date_df = not_full_date_df[~duplicate_mask]
             full_date_df = pd.concat([full_date_df, not_full_date_df], axis=0, sort=False)
             if full_date_df.shape[0] == 0:
                 self.new_data = False

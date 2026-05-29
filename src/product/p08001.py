@@ -241,6 +241,8 @@ class P08001(Generate):
         strategy_resp = {}
 
         data_repository = {"input_param": subjects, "single": is_single, "previous_out_apply_no":previous_out_apply_no}
+        # P0: 预填充 label_dict 缓存，避免下游 TransFlow/TransModuleProcessor 重复查询 label_logic
+        data_repository['_label_dict'] = self._get_label_tree()
         origin_input = {}
         if not is_single:
             variables, out_decision_code = translate_for_strategy(product_code, biz_types, user_name, id_card_no, phone,

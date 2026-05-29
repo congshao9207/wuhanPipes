@@ -19,16 +19,18 @@ class JsonUnionCounterpartyPortrait(TransFlow):
     def read_u_counterparty_pt(self):
         flow_df = self.trans_u_flow_portrait[['trans_date', 'trans_amt', 'opponent_name', 'relationship',
                                               'is_sensitive', 'trans_flow_src_type']]
-        # 获取一年前的日期
-        year_ago = pd.to_datetime(flow_df['trans_date']).max() - DateOffset(months=12)
+        # 缓存日期转换结果，避免重复转换
+        trans_date_dt = pd.to_datetime(flow_df['trans_date'])
+        year_ago = trans_date_dt.max() - DateOffset(months=12)
+        opponent_name_str = flow_df['opponent_name'].astype(str)
 
         # 筛选近一年经营性流水
         flow_df = flow_df[(pd.isnull(flow_df['relationship'])) &
                           (flow_df['is_sensitive'] != 1) &
                           (pd.notnull(flow_df['opponent_name'])) &
-                          (pd.to_datetime(flow_df.trans_date) >= year_ago) &
-                          (~flow_df['opponent_name'].astype(str).str.isnumeric()) &
-                          (~flow_df['opponent_name'].astype(str).str.contains(''.join(UNUSUAL_OPPO_NAME)))]
+                          (trans_date_dt >= year_ago) &
+                          (~opponent_name_str.str.isnumeric()) &
+                          (~opponent_name_str.str.contains('|'.join(UNUSUAL_OPPO_NAME)))]
         # 若筛选后df为空，直接返回节点信息
         if flow_df.shape[0] == 0:
             self.variables["trans_u_counterparty_portrait"] = {
@@ -66,15 +68,16 @@ class JsonUnionCounterpartyPortrait(TransFlow):
         wxzfb_expense_amt_risk_tips = ''
 
         # 对交易对手名进行处理，防止有账户名加账号情况
-        def op_name_trans(op_name):
-            all_ascii_str = re.findall(r'&#\d{2,5};', str(op_name))
-            for s in all_ascii_str:
-                ss = re.sub(r'\D', '', s)
-                op_name.replace(s, chr(int(ss)))
-            op_name = re.sub(r'[^\u4e00-\u9fa5]', '', str(op_name))
-            return op_name
-
-        flow_df['opponent_name'] = flow_df['opponent_name'].apply(op_name_trans)
+        # 先统一转为字符串
+        flow_df['opponent_name'] = flow_df['opponent_name'].astype(str)
+        # 仅对有HTML实体的行进行解码（&#xxx; → chr），罕见情况不做全表扫描
+        has_entity = flow_df['opponent_name'].str.contains(r'&#\d{2,5};')
+        if has_entity.any():
+            def _decode_entity(s):
+                return re.sub(r'&#(\d{2,5});', lambda m: chr(int(m.group(1))), s)
+            flow_df.loc[has_entity, 'opponent_name'] = flow_df.loc[has_entity, 'opponent_name'].apply(_decode_entity)
+        # 只保留中文字符（向量化操作，比逐行apply快数倍）
+        flow_df['opponent_name'] = flow_df['opponent_name'].str.replace(r'[^\u4e00-\u9fa5]', '', regex=True)
         flow_df = flow_df[flow_df['opponent_name'] != '']
         bank_df = flow_df[flow_df['trans_flow_src_type'] == 0]
         wxzfb_df = flow_df[flow_df['trans_flow_src_type'] == 1]
@@ -128,22 +131,26 @@ class JsonUnionCounterpartyPortrait(TransFlow):
     def get_amt_order(self, flow_df):
         # 上下游交叉部分处理
         risk_type = '银行流水：' if flow_df['trans_flow_src_type'].iloc[0] == 0 else '微信支付宝流水：'
-        income_df = flow_df[flow_df.trans_amt > 0]
-        expense_df = flow_df[flow_df.trans_amt < 0]
+        income_df = flow_df[flow_df.trans_amt > 0].copy()
+        expense_df = flow_df[flow_df.trans_amt < 0].copy()
 
         #  剔除交易对手既是上游客户，也是下游客户
-        income_name_list = income_df['opponent_name'].unique().tolist()
-        expense_name_list = expense_df['opponent_name'].unique().tolist()
-        superposition_list = [i for i in income_name_list if i in expense_name_list]
-        superposition_df = flow_df.loc[flow_df['opponent_name'].isin(superposition_list)]
-        for name in income_name_list:
-            if (name in income_df.opponent_name.unique()) and (name in expense_df.opponent_name.unique()):
-                income_amt = income_df[income_df.opponent_name == name].trans_amt.sum()
-                expense_amt = expense_df[expense_df.opponent_name == name].trans_amt.sum()
-                if income_amt >= abs(expense_amt):
-                    expense_df.drop(expense_df[expense_df['opponent_name'] == name].index, inplace=True)
-                else:
-                    income_df.drop(income_df[income_df['opponent_name'] == name].index, inplace=True)
+        #  向量化处理：用 groupby 一次算出每个交易对手的总收支，避免 O(n²) 循环
+        income_sum = income_df.groupby('opponent_name')['trans_amt'].sum()
+        expense_sum = expense_df.groupby('opponent_name')['trans_amt'].sum().abs()
+        common_names = income_sum.index.intersection(expense_sum.index)
+
+        superposition_df = flow_df.loc[flow_df['opponent_name'].isin(common_names)]
+
+        if len(common_names) > 0:
+            # 一次判断每个交叉名称归入收入还是支出方
+            income_side = common_names[income_sum[common_names] >= expense_sum[common_names]]
+            expense_side = common_names[income_sum[common_names] < expense_sum[common_names]]
+            # 用布尔索引一次性过滤，避免逐行 drop
+            income_df = income_df[~income_df['opponent_name'].isin(common_names) |
+                                  income_df['opponent_name'].isin(income_side)]
+            expense_df = expense_df[~expense_df['opponent_name'].isin(common_names) |
+                                    expense_df['opponent_name'].isin(expense_side)]
 
         income_amt_order = self.in_out_detail(income_df)
         expense_amt_order = self.in_out_detail(expense_df)
@@ -209,82 +216,11 @@ class JsonUnionCounterpartyPortrait(TransFlow):
             expense_amt_risk_tips = risk_type + expense_amt_risk_tips if expense_amt_risk_tips != '' else ''
         return income_amt_order, income_amt_risk_tips, expense_amt_order, expense_amt_risk_tips, superposition_amt_order
 
-    @staticmethod
-    def in_out_detail(df):
-        # 进出帐分别处理
-        all_detail = {}
-        in_out_type = 'income_amt_order'
-        out_in_type = 'expense_amt_order'
-        if df['trans_amt'].sum() < 0:
-            in_out_type = 'expense_amt_order'
-            out_in_type = 'income_amt_order'
+    def in_out_detail(self, df):
+        return self._build_detail(df, is_superposition=False)
 
-        # 前十客户表单
-        # 平均账期函数
-        def gap_avg(date):
-            all_unique_trans_date = sorted(list(set(date.to_list())))
-            diff_days = [(all_unique_trans_date[i + 1] - all_unique_trans_date[i]).days - 1
-                         for i in range(len(all_unique_trans_date) - 1)]
-            diff_days = [x for x in diff_days if x != 0]
-            return sum(diff_days) / len(diff_days) if len(diff_days) != 0 else 0
-
-        df['trans_amt'] = df['trans_amt'].apply(abs)
-        order_df = df.groupby('opponent_name').aggregate(
-            {'trans_amt': ['sum', 'count', 'mean'],
-             'calendar_month': ['nunique'],
-             'trans_date': [gap_avg]}).reset_index()
-        order_df.columns = ['opponent_name', 'trans_amt', 'trans_cnt', 'trans_mean', 'trans_month_cnt', 'trans_gap_avg']
-
-        # 剔除交易总额1000以下的客户
-        order_df = order_df[order_df['trans_amt'] > UP_DOWNSTREAM_THRESHOLD]
-        order_df.sort_values(by='trans_amt', ascending=False, inplace=True)
-        order_df.reset_index(inplace=True, drop=True)
-        # 总金额
-        income_total_amt = order_df['trans_amt'].sum()
-        # 金额占比
-        order_df['trans_amt_proportion'] = \
-            order_df['trans_amt'] / income_total_amt if income_total_amt != 0 else 0
-        # 取前十
-        order_df = order_df.iloc[:10, ]
-        # 添加序号
-        order_df[in_out_type] = order_df.index + 1
-        order_df[in_out_type] = order_df[in_out_type].astype(str)
-        # 月份
-        order_df['month'] = '汇总'
-        # 同步老接口
-        order_df[out_in_type] = None
-        order_df['income_amt_proportion'] = None
-
-        order_df_list = order_df.to_dict('records')
-        for index, detail in enumerate(order_df_list):
-            all_detail[str(index + 1)] = [detail]
-        # 下游客户明细表单
-        order_df_detail = df.groupby(['opponent_name', 'calendar_month']).agg(
-            trans_amt=('trans_amt', 'sum'),
-            trans_cnt=('trans_amt', 'count')
-        ).reset_index()
-        order_df_detail = order_df_detail.rename(columns={"calendar_month": "month"})
-        # 获取13个月份
-        full_df = pd.DataFrame({'month': [str(_ + 1) for _ in range(13)]})
-        for order in range(order_df.shape[0]):
-            amt_order = str(order + 1)
-            opponent_name = order_df[order_df[in_out_type] == amt_order]['opponent_name'].iloc[0]
-            detail = order_df_detail[order_df_detail['opponent_name'] == opponent_name]
-            detail = pd.merge(full_df, detail, how='left', on='month')
-            detail['opponent_name'].fillna(opponent_name, inplace=True)
-            detail['trans_amt'].fillna(0, inplace=True)
-            detail['trans_cnt'].fillna(0, inplace=True)
-            detail[in_out_type] = amt_order
-            # 适配老接口
-            detail[out_in_type] = None
-            detail['income_amt_proportion'] = None
-            detail['trans_gap_avg'] = None
-            detail['trans_amt_proportion'] = None
-            detail['trans_mean'] = None
-            detail['trans_month_cnt'] = None
-            detail['trans_gap_avg'] = None
-            all_detail[amt_order] += detail.to_dict('records')
-        return all_detail
+    def superposition_detail(self, df):
+        return self._build_detail(df, is_superposition=True)
 
     # 获取排名第n名交易对手的交易占比
     @staticmethod
@@ -297,8 +233,8 @@ class JsonUnionCounterpartyPortrait(TransFlow):
                 return trans_amt_proportion
 
     @staticmethod
-    def superposition_detail(df):
-        # 进出帐分别处理
+    def _build_detail(df, is_superposition=False):
+        """进出帐明细构建（合并 in_out_detail 和 superposition_detail 的公共逻辑）"""
         all_detail = {}
         in_out_type = 'income_amt_order'
         out_in_type = 'expense_amt_order'
@@ -306,16 +242,15 @@ class JsonUnionCounterpartyPortrait(TransFlow):
             in_out_type = 'expense_amt_order'
             out_in_type = 'income_amt_order'
 
-        # 前十客户表单
         # 平均账期函数
         def gap_avg(date):
-            all_unique_trans_date = sorted(list(set(date.to_list())))
+            all_unique_trans_date = sorted(set(date.to_list()))
             diff_days = [(all_unique_trans_date[i + 1] - all_unique_trans_date[i]).days - 1
                          for i in range(len(all_unique_trans_date) - 1)]
             diff_days = [x for x in diff_days if x != 0]
-            return sum(diff_days) / len(diff_days) if len(diff_days) != 0 else 0
+            return sum(diff_days) / len(diff_days) if diff_days else 0
 
-        df['trans_amt'] = df['trans_amt'].apply(abs)
+        df['trans_amt'] = df['trans_amt'].abs()
         order_df = df.groupby('opponent_name').aggregate(
             {'trans_amt': ['sum', 'count', 'mean'],
              'calendar_month': ['nunique'],
@@ -326,51 +261,44 @@ class JsonUnionCounterpartyPortrait(TransFlow):
         order_df = order_df[order_df['trans_amt'] > UP_DOWNSTREAM_THRESHOLD]
         order_df.sort_values(by='trans_amt', ascending=False, inplace=True)
         order_df.reset_index(inplace=True, drop=True)
-        # 总金额
         income_total_amt = order_df['trans_amt'].sum()
-        # 金额占比
         order_df['trans_amt_proportion'] = \
             order_df['trans_amt'] / income_total_amt if income_total_amt != 0 else 0
-        # 取前十
         order_df = order_df.iloc[:10, ]
-        # 添加序号
-        order_df['amt_order'] = order_df.index + 1
-        order_df['amt_order'] = order_df['amt_order'].astype(str)
-        order_df[in_out_type] = order_df.index + 1
-        order_df[in_out_type] = order_df[in_out_type].astype(str)
-        # 月份
+        order_index_col = 'amt_order' if is_superposition else in_out_type
+        order_df[order_index_col] = (order_df.index + 1).astype(str)
+        order_df[in_out_type] = order_df[order_index_col]
         order_df['month'] = '汇总'
-        # 同步老接口
         order_df[out_in_type] = None
         order_df['income_amt_proportion'] = None
 
-        order_df_list = order_df.to_dict('records')
-        for index, detail in enumerate(order_df_list):
-            all_detail[str(index + 1)] = [detail]
-        # 下游客户明细表单
+        # 汇总行
+        for idx, row in enumerate(order_df.to_dict('records')):
+            all_detail[str(idx + 1)] = [row]
+
+        # 按月明细：预构建 dict 避免循环内重复过滤 DataFrame
         order_df_detail = df.groupby(['opponent_name', 'calendar_month']).agg(
             trans_amt=('trans_amt', 'sum'),
             trans_cnt=('trans_amt', 'count')
-        ).reset_index()
-        order_df_detail = order_df_detail.rename(columns={"calendar_month": "month"})
-        # 获取13个月份
+        ).reset_index().rename(columns={"calendar_month": "month"})
+        detail_by_name = {name: grp for name, grp in order_df_detail.groupby('opponent_name')}
+
         full_df = pd.DataFrame({'month': [str(_ + 1) for _ in range(13)]})
         for order in range(order_df.shape[0]):
             amt_order = str(order + 1)
-            opponent_name = order_df[order_df['amt_order'] == amt_order]['opponent_name'].iloc[0]
-            detail = order_df_detail[order_df_detail['opponent_name'] == opponent_name]
-            detail = pd.merge(full_df, detail, how='left', on='month')
-            detail['opponent_name'].fillna(opponent_name, inplace=True)
-            detail['trans_amt'].fillna(0, inplace=True)
-            detail['trans_cnt'].fillna(0, inplace=True)
-            detail['amt_order'] = amt_order
-            # 适配老接口
+            opponent_name = order_df.iloc[order]['opponent_name']
+            detail = detail_by_name.get(opponent_name, pd.DataFrame())
+            detail = full_df.merge(detail, how='left', on='month')
+            detail['opponent_name'] = opponent_name
+            detail['trans_amt'] = detail['trans_amt'].fillna(0)
+            detail['trans_cnt'] = detail['trans_cnt'].fillna(0)
+            detail[order_index_col] = amt_order
+            detail[in_out_type] = amt_order
             detail[out_in_type] = None
             detail['income_amt_proportion'] = None
             detail['trans_gap_avg'] = None
             detail['trans_amt_proportion'] = None
             detail['trans_mean'] = None
             detail['trans_month_cnt'] = None
-            detail['trans_gap_avg'] = None
             all_detail[amt_order] += detail.to_dict('records')
         return all_detail

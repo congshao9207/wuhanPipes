@@ -19,4 +19,4 @@ ENV PYTHONPATH=/usr/src/app
 #RUN yum install -y xz-devel python-backports-lzma
 #RUN apt-get update && apt-get install -y liblzma-dev
 
-CMD ["gunicorn", "--workers=5", "--bind=0.0.0.0:8010", "app:app", "-t=600"]
+CMD ["gunicorn", "--workers=5", "--bind=0.0.0.0:8010", "app:app", "-t=1200", "--preload"]

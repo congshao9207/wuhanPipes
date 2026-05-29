@@ -69,6 +69,9 @@ def transform_class_str(params, class_name):
         vals = []
         for col in col_list:
             if col in col_val and pd.notna(col_val[col]):
+                if isinstance(col_val[col], str):
+                    col_val[col] = re.sub(r'[\ue000-\uf8ff\u144b\u1d49\u144a\u1d52]', '', col_val[col])
+                    col_val[col] = col_val[col].encode('utf-8', errors='ignore').decode('utf-8')
                 vals.append(re.sub(r"(?<![\da-zA-Z]):", '-', f"'{col_val[col]}'"))
             else:
                 vals.append('null')
@@ -81,6 +84,8 @@ def transform_class_str(params, class_name):
             db.session.execute(text(ins))
         db.session.commit()
     except Exception as e:
+        import traceback
+        logger.info(traceback.format_exc())
         db.session.rollback()
         logger.info(f"库表{f.__tablename__}写入数据失败，失败原因{e}")
     return insert_list
