@@ -15,13 +15,17 @@ class JsonUSuspectedAffiliates(TransFlow):
             "suspected_affiliates": [],
             "related_opponent": []
         }
-        self.process_manual_management_and_suspected_affiliates()
+        # 只调用一次 get_u_flow_portrait_detail，避免重复执行 3 次相同的数据预处理
+        df = self.get_u_flow_portrait_detail()
+        if df.shape[0] == 0:
+            return
+        self.process_manual_management_and_suspected_affiliates(df)
 
     # 定义函数，处理“手动管理和疑似关联”的名单
-    def process_manual_management_and_suspected_affiliates(self):
-        manual_management_detail = self._get_opponent_detail('manual_management')
-        suspected_affiliates_detail = self._get_opponent_detail('suspected_affiliates')
-        related_opponent_detail = self._get_opponent_detail('related_opponent')
+    def process_manual_management_and_suspected_affiliates(self, df):
+        manual_management_detail = self._get_opponent_detail(df, 'manual_management')
+        suspected_affiliates_detail = self._get_opponent_detail(df, 'suspected_affiliates')
+        related_opponent_detail = self._get_opponent_detail(df, 'related_opponent')
         self.variables['opponent_info']['related_opponent'] = related_opponent_detail
         self.variables['opponent_info']['manual_management'] = manual_management_detail
         self.variables['opponent_info']['suspected_affiliates'] = suspected_affiliates_detail
@@ -31,18 +35,18 @@ class JsonUSuspectedAffiliates(TransFlow):
         df = self.trans_u_flow_portrait.copy()
         if df.shape[0] == 0:
             return pd.DataFrame()
-        # 获取一年前的日期
-        year_ago = pd.to_datetime(df['trans_date']).max() - DateOffset(months=12)
-        # 新增交易年-月列
-        df['trans_month'] = df.trans_date.apply(lambda x: x.strftime('%Y-%m'))
+        # 缓存日期转换结果，避免重复转换
+        trans_date_dt = pd.to_datetime(df['trans_date'])
+        year_ago = trans_date_dt.max() - DateOffset(months=12)
         # 筛选近一年数据
-        df = df.loc[pd.to_datetime(df.trans_date) >= year_ago]
+        df = df.loc[trans_date_dt >= year_ago].copy()
         if df.shape[0] == 0:
             return pd.DataFrame()
-        # 添加交易对手类型
+        # 新增交易年-月列
+        df['trans_month'] = df['trans_date'].apply(lambda x: x.strftime('%Y-%m'))
+        # 添加交易对手类型（向量化 apply 仅作用于单列，避免 axis=1 全表逐行调用）
         df['oppo_name'] = df['opponent_name'].fillna('').apply(self._oppo_name_optimize)
-        df['oppo_type'] = df.apply(lambda x: self._oppo_type(
-            x['oppo_name'], x['trans_flow_src_type']), axis=1)
+        df['oppo_type'] = df['oppo_name'].apply(self._oppo_type)
         # 临时处理，填充oppo_type为空和oppo_type为unknown的为1
         df['oppo_type'] = df['oppo_type'].apply(lambda x: 1 if x is None or x == 'unknown' or pd.isna(x) else x)
         return df
@@ -59,7 +63,7 @@ class JsonUSuspectedAffiliates(TransFlow):
         return oppo_name
 
     @staticmethod
-    def _oppo_type(oppo_name, trans_flow_src_type):
+    def _oppo_type(oppo_name):
         """
         判定交易对手类别
         :param oppo_name:
@@ -79,109 +83,108 @@ class JsonUSuspectedAffiliates(TransFlow):
         TYPE_EXCEPT_4 = r"[财存天停大柜订百本宝网保北电放还好汇结借跨理利内其上深浙税现中微短发卡随有月油退收快取]"
 
         oppo_name = JsonUSuspectedAffiliates._oppo_name_optimize(oppo_name)
-        # 分银行流水和微信支付宝流水来判断
-        if trans_flow_src_type is None or trans_flow_src_type == 1 or trans_flow_src_type == '1':
-            if len(oppo_name) > 6 and re.search(ENT_TYPE, oppo_name) is not None:
-                return 2
-            elif len(oppo_name) <= 15:
-                cleaned_name = re.sub(TYPE_EXCEPT_1, '', oppo_name)
-                if re.match(TYPE_START_1, cleaned_name):
-                    cleaned_name = re.sub(TYPE_EXCEPT_2, '', cleaned_name)
-                elif re.match(TYPE_START_2, cleaned_name):
-                    cleaned_name = cleaned_name.split()[-1]
-                else:
-                    cleaned_name = re.sub(r' ', '', cleaned_name)
-                if 2 <= len(cleaned_name) <= 3:
-                    if re.search(TYPE_EXCEPT_3, cleaned_name) is None and \
-                            re.match(TYPE_EXCEPT_4, cleaned_name) is None:
-                        return 1
+        if len(oppo_name) > 6 and re.search(ENT_TYPE, oppo_name) is not None:
+            return 2
+        elif len(oppo_name) <= 15:
+            cleaned_name = re.sub(TYPE_EXCEPT_1, '', oppo_name)
+            if re.match(TYPE_START_1, cleaned_name):
+                cleaned_name = re.sub(TYPE_EXCEPT_2, '', cleaned_name)
+            elif re.match(TYPE_START_2, cleaned_name):
+                cleaned_name = cleaned_name.split()[-1]
             else:
-                return 'unknown'
+                cleaned_name = re.sub(r' ', '', cleaned_name)
+            if 2 <= len(cleaned_name) <= 3:
+                if re.search(TYPE_EXCEPT_3, cleaned_name) is None and \
+                        re.match(TYPE_EXCEPT_4, cleaned_name) is None:
+                    return 1
         else:
-            if len(oppo_name) > 6 and re.search(ENT_TYPE, oppo_name) is not None:
-                return 2
-            elif len(oppo_name) <= 15:
-                cleaned_name = re.sub(TYPE_EXCEPT_1, '', oppo_name)
-                if re.match(TYPE_START_1, cleaned_name):
-                    cleaned_name = re.sub(TYPE_EXCEPT_2, '', cleaned_name)
-                elif re.match(TYPE_START_2, cleaned_name):
-                    cleaned_name = cleaned_name.split()[-1]
-                else:
-                    cleaned_name = re.sub(r' ', '', cleaned_name)
-                if 2 <= len(cleaned_name) <= 3:
-                    if re.search(TYPE_EXCEPT_3, cleaned_name) is None and \
-                            re.match(TYPE_EXCEPT_4, cleaned_name) is None:
-                        return 1
-            else:
-                return 'unknown'
+            return 'unknown'
 
-    def _get_opponent_detail(self, opponent_type: str):
-        df = self.get_u_flow_portrait_detail()
+    def _get_opponent_detail(self, df, opponent_type: str):
         if df.shape[0] == 0:
             return []
-        opponent_info_list = []
-        total_income_amt = df.loc[df.trans_amt > 0]['trans_amt'].sum()
-        total_expense_amt = df.loc[df.trans_amt < 0]['trans_amt'].abs().sum()
+
+        total_income_amt = df.loc[df.trans_amt > 0, 'trans_amt'].sum()
+        total_expense_amt = df.loc[df.trans_amt < 0, 'trans_amt'].abs().sum()
         related_opponent_dict = {}
-        # opponent_init_type = 'manual_management'
-        # if opponent_init_type == opponent_type:
-        #     opponent_init_type = opponent_type
-        # else:
-        #     opponent_init_type = 'suspected_affiliates'
-        # 根据给定的opponent_type，筛选出对应的opponent_list
+
+        # 根据给定的opponent_type，筛选出对应的数据子集
         if opponent_type == 'manual_management':
-            temp_df = df.copy()
-            # 交易对手按金额和出账金额求和
+            mask = pd.notna(df['oppo_name']) & (df['oppo_name'] != '')
+            temp_df = df.loc[mask].copy()
             temp_df['trans_amt'] = temp_df['trans_amt'].abs()
-            # 剔除空值
-            temp_df = temp_df.loc[pd.notna(temp_df['oppo_name']) & (temp_df['oppo_name'] != '')]
-            df_grouped = temp_df.groupby('oppo_name').agg({'trans_amt': 'sum'})
-            df_grouped.sort_values(by='trans_amt', ascending=False, inplace=True)
-            # 取前十
-            opponent_list = df_grouped.index.to_list()[:10]
+            df_grouped = temp_df.groupby('oppo_name')['trans_amt'].sum()
+            df_grouped = df_grouped.sort_values(ascending=False)
+            top10 = df_grouped.index[:10].tolist()
+            df = df[df['oppo_name'].isin(top10)]
         elif opponent_type == 'suspected_affiliates':
-            temp_df = df.loc[df['compatibility_label'].apply(self.has_valid_code)]
-            temp_df = temp_df.loc[pd.notna(temp_df['oppo_name']) & (temp_df['oppo_name'] != '')]
-            opponent_list = temp_df['oppo_name'].unique().tolist()
+            valid_mask = df['compatibility_label'].apply(self.has_valid_code)
+            mask = valid_mask & pd.notna(df['oppo_name']) & (df['oppo_name'] != '')
+            df = df.loc[mask]
         else:
-            opponent_list = []
+            # related_opponent
             for item in self.cached_data['input_param']:
-                opponent_list.append(item['name'])
                 related_opponent_dict[item['name']] = 1 if item['userType'] == 'PERSONAL' else 2
-        for opponent in opponent_list:
-            opponent_detail_df = df.loc[df['oppo_name'] == opponent]
-            if opponent_detail_df.shape[0] == 0:
-                continue
-            income_amt = df.loc[(df['oppo_name'] == opponent) & (df['trans_amt'] > 0)]['trans_amt'].sum()
-            expense_amt = df.loc[(df['oppo_name'] == opponent) & (df['trans_amt'] < 0)]['trans_amt'].abs().sum()
-            diff_amt = abs(income_amt - expense_amt)
+            df = df[df['oppo_name'].isin(related_opponent_dict.keys())]
+
+        if df.shape[0] == 0:
+            return []
+
+        # ----- 向量化计算：一次性用 groupby 算出所有对手的汇总指标 -----
+        # 计算每个对手的收支总额  (替代循环中 5 次 df.loc[df['oppo_name'] == x])
+        def income_sum(s):
+            return s[s > 0].sum()
+        def expense_sum(s):
+            return s[s < 0].abs().sum()
+
+        oppo_stats = df.groupby('oppo_name')['trans_amt'].agg([income_sum, expense_sum]).reset_index()
+        oppo_stats.columns = ['oppo_name', 'income_amt', 'expense_amt']
+        oppo_stats['diff_amt'] = (oppo_stats['income_amt'] - oppo_stats['expense_amt']).abs()
+
+        # 对手类型（每个对手取第一个值）
+        oppo_types = df.groupby('oppo_name')['oppo_type'].first().to_dict()
+
+        # 按月收支明细：一次性 groupby (oppo_name, trans_month)
+        monthly = df.groupby(['oppo_name', 'trans_month'])['trans_amt'].agg(
+            income=income_sum, expense=expense_sum
+        ).reset_index()
+
+        # ----- 构建输出（此时循环内无 DataFrame 过滤操作）-----
+        opponent_info_list = []
+        for _, row in oppo_stats.iterrows():
+            opponent = row['oppo_name']
+            income_amt = row['income_amt']
+            expense_amt = row['expense_amt']
+
             income_amt_prop = income_amt / total_income_amt if total_income_amt > 0 else 0
             expense_amt_prop = expense_amt / total_expense_amt if total_expense_amt > 0 else 0
+
             if opponent_type != 'related_opponent':
-                oppo_type = int(df.loc[df['oppo_name'] == opponent]['oppo_type'].values[0])
+                oppo_type = int(oppo_types.get(opponent, 1))
             else:
-                oppo_type = related_opponent_dict[opponent]
+                oppo_type = related_opponent_dict.get(opponent, 1)
 
-            def func1(x):
-                return round(x[x > 0].sum() / 10000, 2)
+            # 取出该对手的月度明细
+            m = monthly[monthly['oppo_name'] == opponent]
+            opponent_trans_detail = [
+                {
+                    'trans_month': r['trans_month'],
+                    'income_amt': round(r['income'] / 10000, 2),
+                    'expense_amt': round(r['expense'] / 10000, 2),
+                }
+                for _, r in m.iterrows()
+            ]
 
-            def func2(x):
-                return round(abs(x[x < 0].sum()) / 10000, 2)
-
-            info_detail_df = df.loc[(df['oppo_name'] == opponent)].groupby(
-                'trans_month').agg({'trans_amt': [func1, func2]}).reset_index()
-            info_detail_df.columns = ['trans_month', 'income_amt', 'expense_amt']
-            temp_dict = {
+            opponent_info_list.append({
                 'opponent_name': opponent,
                 'income_amt': round(income_amt / 10000, 2),
                 'expense_amt': round(expense_amt / 10000, 2),
-                'diff_amt': round(diff_amt / 10000, 2),
+                'diff_amt': round(row['diff_amt'] / 10000, 2),
                 'income_amt_prop': round(income_amt_prop, 4),
                 'expense_amt_prop': round(expense_amt_prop, 4),
                 "opponent_type": oppo_type,
-                'opponent_trans_detail': info_detail_df.to_dict(orient='records')
-            }
-            opponent_info_list.append(temp_dict)
+                'opponent_trans_detail': opponent_trans_detail,
+            })
         return opponent_info_list
 
     @staticmethod

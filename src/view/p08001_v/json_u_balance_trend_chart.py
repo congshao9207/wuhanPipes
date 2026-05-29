@@ -16,14 +16,15 @@ class JsonUBalanceTrendChart(TransFlow):
         df = self.trans_u_flow_portrait.copy()
         if df.shape[0] == 0:
             return pd.DataFrame()
-        # 获取一年前的日期
-        year_ago = pd.to_datetime(df['trans_date']).max() - DateOffset(months=12)
-        # 新增交易年-月列
-        df['trans_month'] = df.trans_date.apply(lambda x: x.strftime('%Y-%m'))
-        # 筛选近一年数据
-        df = df.loc[pd.to_datetime(df.trans_date) >= year_ago]
+        # 缓存日期转换结果（trans_date 已是 datetime-like 类型，但统一转一次供复用）
+        trans_date_dt = pd.to_datetime(df['trans_date'])
+        year_ago = trans_date_dt.max() - DateOffset(months=12)
+        # 筛选近一年数据（向量化，利用缓存结果）
+        df = df.loc[trans_date_dt >= year_ago].copy()
         if df.shape[0] == 0:
             return pd.DataFrame()
+        # 新增交易年-月列
+        df['trans_month'] = df['trans_date'].apply(lambda x: x.strftime('%Y-%m'))
         return df
 
     @staticmethod
@@ -40,31 +41,26 @@ class JsonUBalanceTrendChart(TransFlow):
         df = self.get_u_flow_portrait_detail()
         if df.shape[0] == 0:
             return
-        # 将df取每天最后一笔交易的account_balance,若某天为空，则取前一天的account_balance
-        # start_date = pd.to_datetime(df['trans_date']).min()
-        # end_date = pd.to_datetime(df['trans_date']).max()
-        # 要满足分主体、分账户的展示，所以是输出每个账户的余额和理财数据，由前端或后端去计算
-        # 数据中已包含账户信息，只用关联取主体信息即可
+
         account_id_list = df.account_id.unique().tolist()
         account_info = self.get_trans_account_info(account_id_list)
-        for name in account_info['account_name'].unique().tolist():
-            account_id_list_all = account_info.loc[account_info['account_name'] == name, 'id'].tolist()
-            account_df = df.loc[df.account_id.isin(account_id_list_all)]
-            if account_df.shape[0] > 0:
-                for account_no in account_df['account_no'].unique().tolist():
-                    account_no_df = account_df.loc[account_df['account_no'] == account_no]
-                    if account_no_df.shape[0] > 0:
-                        last_balance, mean_balance_d, mean_balance_m, financial_scale, account_detail_d, account_detail_m = \
-                            self.get_account_balance_trend(account_no_df)
-                        account_detail_dict = {'account_name': name,
-                                               'account_no': account_no,
-                                               "last_balance": last_balance,
-                                               "mean_balance_d": mean_balance_d,
-                                               "mean_balance_m": mean_balance_m,
-                                               "financial_scale": financial_scale,
-                                               "account_detail_d": account_detail_d,
-                                               "account_detail_m": account_detail_m}
-                        self.variables['trans_balance_trend_chart'].append(account_detail_dict)
+        account_info.rename(columns = {'id':'account_id'}, inplace = True)
+        # 将账户信息 merge 进 df，一次完成，避免循环内重复过滤
+        df = df.merge(account_info, on='account_id', how='left')
+
+        # 用 groupby 替代嵌套循环，pandas C 级分组比 Python 级循环快得多
+        for (name, account_no), group_df in df.groupby(['account_name', 'account_no']):
+            last_balance, mean_balance_d, mean_balance_m, financial_scale, account_detail_d, account_detail_m = \
+                self.get_account_balance_trend(group_df)
+            account_detail_dict = {'account_name': name,
+                                   'account_no': account_no,
+                                   "last_balance": last_balance,
+                                   "mean_balance_d": mean_balance_d,
+                                   "mean_balance_m": mean_balance_m,
+                                   "financial_scale": financial_scale,
+                                   "account_detail_d": account_detail_d,
+                                   "account_detail_m": account_detail_m}
+            self.variables['trans_balance_trend_chart'].append(account_detail_dict)
 
     # 处理每个账户的日余额和理财数据
     @staticmethod
@@ -75,30 +71,24 @@ class JsonUBalanceTrendChart(TransFlow):
         :return:
         """
 
-        # 建空表--索引为 第一笔交易-最后一笔交易 所有日期
-        # start_date = account_df['trans_date'].min()
-        # end_date = account_df['trans_date'].max()
-        # date_index = pd.date_range(start=start_date, end=end_date)
-        # temp_flow = pd.DataFrame(index=date_index)
         flow = account_df.copy()
         # 微信和支付宝，没有余额，存在account_balance为空的情况
         flow['account_balance'].fillna(0, inplace=True)
 
-        def func1(x):
-            return x[x.index.max()].sum()
+        # 日余额：取每天最后一笔的 account_balance（向量化 last，比自定义 func1 快）
+        daily_balance = flow.groupby('trans_date')['account_balance'].last()
 
-        def func2(x):
-            return x[x.index.isin(flow.loc[flow.usual_trans_type.str.contains('理财')].index.tolist())].sum()
+        # 日理财金额：逐日汇总 usual_trans_type 包含"理财"的交易金额
+        # 关键优化：str.contains('理财') 只计算一次，而不是在每个 group 里重复全表扫描
+        finance_mask = flow['usual_trans_type'].str.contains('理财', na=False)
+        daily_finance = flow[finance_mask].groupby('trans_date')['trans_amt'].sum()
 
-        flow_group_d = flow.groupby('trans_date').agg({
-            'account_balance': func1,
-            'trans_amt': func2
-        })
-        # account_detail = temp_flow.merge(flow_group_d, how='left', left_index=True, right_index=True)
+        flow_group_d = pd.DataFrame({'account_balance': daily_balance, 'trans_amt': daily_finance})
+        flow_group_d['trans_amt'] = flow_group_d['trans_amt'].fillna(0)
+
         account_detail_d = flow_group_d.reset_index()
         account_detail_d['account_balance'].fillna(method='ffill', inplace=True)
         account_detail_d['trans_amt'].fillna(0, inplace=True)
-        # account_detail_d = account_detail_d.reset_index().rename(columns={'index': 'trans_date'})
         account_detail_d['trans_date'] = account_detail_d['trans_date'].apply(lambda x: x.strftime('%Y-%m-%d'))
 
         # 处理月度余额
