@@ -1,7 +1,6 @@
 import importlib
 import json
 import logging
-import threading
 import time
 import traceback
 
@@ -45,7 +44,6 @@ def shake_hand():
     """
     try:
         json_data = request.get_json()
-        logger.info("shake_hand------start-------%s", json_data)
         product_code = json_data.get('productCode')
         handler = _get_product_handler(product_code)
         df_client = DefensorClient(request.headers)
@@ -90,7 +88,6 @@ def strategy():
         return jsonify(resp)
     except Exception as e:
         logger.error(traceback.format_exc())
-
 
 @app.route("/parse", methods=['POST'])
 def parse():
@@ -227,7 +224,6 @@ def _get_product_handler(product_code) -> Generate:
         logger.error(f"加载产品处理器时出错: {err}")
         return Generate()
 
-
 def _get_handler(folder, prefix, code) -> Parser:
     try:
         model = importlib.import_module(folder + "." + prefix + str(code))
@@ -240,7 +236,8 @@ def _get_handler(folder, prefix, code) -> Parser:
 
 
 def sql_db():
-    db_url = 'mysql+pymysql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % GEARS_DB
+    db_url = 'dm+dmPython://%(user)s:%(pw)s@%(host)s:%(port)s?schema=%(db)s' % GEARS_DB
+    # db_url = 'mysql+pymysql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % GEARS_DB
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = False

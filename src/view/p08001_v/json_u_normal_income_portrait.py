@@ -227,7 +227,8 @@ class JsonUnionNormalIncomePortrait(TransFlow):
                                      f"总出账{temp_df['wx_month_expense_amt'].sum() / 10000:.2f}万元、" \
                                      f"净进账{temp_df['wx_net_income'].sum() / 10000:.2f}万元"
             for col in temp_df.select_dtypes(include=['float64', 'float32', 'float']).columns.tolist():
-                temp_df[col] = temp_df[col].apply(lambda x: '%.2f' % x)
+                # temp_df[col] = temp_df[col].apply(lambda x: '%.2f' % x)
+                temp_df[col] = temp_df[col].apply(lambda x: f"{x / 10000:.2f}")
             temp_df.sort_values('month', ascending=True, inplace=True)
 
             # 图表信息

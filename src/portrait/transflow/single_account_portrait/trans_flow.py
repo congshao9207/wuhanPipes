@@ -2,7 +2,7 @@ import datetime
 
 import pandas as pd
 # TODO eval 动态导入，不能删除下面的导入。
-from app import logger, sql_db, sql_session
+from app import app, logger, sql_db, sql_session
 from portrait.transflow.single_account_portrait.models import TransAccount, TransFlow, TransFlowPortrait, \
     TransSinglePortrait, TransSingleSummaryPortrait, TransSingleRemarkPortrait, TransSingleCounterpartyPortrait, \
     TransSingleRelatedPortrait, TransSingleLoanPortrait, TransApply, TransUFlowPortrait, TransULoanPortrait, \
@@ -80,6 +80,7 @@ def transform_class_str(params, class_name):
                    for i in range(0, len(params), 1000)]
     db = sql_session
     try:
+        # with app.app_context():
         for ins in insert_list:
             db.session.execute(text(ins))
         db.session.commit()

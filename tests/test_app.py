@@ -15,6 +15,7 @@ pd.set_option('display.max_columns', 500)
 
 def shake_hand_request(client, product_code):
     content = resource_content("shake_hand_p" + product_code + ".txt")
+    print(content)
     rv = client.post('/biz-types', json=json.loads(content))
     assert rv.status_code == 200
     v = rv.get_json()
